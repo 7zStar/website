@@ -1,0 +1,25 @@
+# Font sources used by tools/subset-fonts.py; only the generated woff2 files are committed
+*.ttf
+*.otf
+fonts-src/
+
+# Scratch and local tooling
+_tmp/
+__pycache__/
+.venv/
+.DS_Store
+Thumbs.db
+
+# Built by the pages workflow; run locally only to preview
+/public/index.html
+/public/en/
+/public/zh-hant/
+/public/zh-hans/
+/public/de/
+/public/fr/
+/public/es/
+/public/pt-br/
+/public/ja/
+/public/vi/
+/public/eo/
+/public/sitemap.xml

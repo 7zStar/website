@@ -1,0 +1,12 @@
+Copyright (c) 2026 7-ZSTar contributors. All rights reserved.
+
+The contents of this repository (the website's pages, copy, images and scripts)
+are not open source. They are published so the site can be read and deployed.
+No licence is granted to copy, modify or redistribute them.
+
+Exceptions:
+
+- The fonts in public/fonts/ are under the SIL Open Font License 1.1. See the
+  OFL-*.txt files next to them.
+- 7-ZSTar, the program, is a separate work under its own licence, the GNU LGPL
+  v3: https://github.com/7zStar/7-ZSTar
