@@ -8,12 +8,17 @@
 The output file of each language is listed in OUTPUT below (public/og.png for English,
 public/og-<slug>.png for the others).
 
+Usage: uv run tools/make-og.py            render every language in OUTPUT
+       uv run tools/make-og.py ru ko      render only these languages (keys of OUTPUT, e.g. zh-Hant, pt-BR);
+                                          an unknown key stops the script before anything is rendered
+
 The three lines are the dictionary values hero.l1, onepass.h and speed.h2 from
 src/i18n.json, so the images always say what the page says. Rerun after changing
-those strings. tools/og.html loads Noto Sans TC, Noto Sans JP and the full Unbounded
-from Google Fonts, so it needs an internet connection; look at the result before committing.
+those strings. tools/og.html loads Noto Sans TC, Noto Sans JP, Noto Sans KR and the full
+Unbounded from Google Fonts, so it needs an internet connection; look at the result before committing.
 """
 import json
+import sys
 from html import escape
 from pathlib import Path
 
@@ -22,12 +27,15 @@ from playwright.sync_api import sync_playwright
 root = Path(__file__).resolve().parent.parent
 i18n = json.loads((root / "src" / "i18n.json").read_text(encoding="utf-8"))
 
-OUTPUT = {"en": "og.png", "zh-Hant": "og-zh-hant.png", "zh-Hans": "og-zh-hans.png", "de": "og-de.png", "fr": "og-fr.png", "es": "og-es.png", "pt-BR": "og-pt-br.png", "ja": "og-ja.png", "vi": "og-vi.png", "eo": "og-eo.png"}
+OUTPUT = {"en": "og.png", "zh-Hant": "og-zh-hant.png", "zh-Hans": "og-zh-hans.png", "de": "og-de.png", "fr": "og-fr.png", "es": "og-es.png", "pt-BR": "og-pt-br.png", "ja": "og-ja.png", "vi": "og-vi.png", "ru": "og-ru.png", "ko": "og-ko.png", "it": "og-it.png", "pl": "og-pl.png", "tr": "og-tr.png", "nl": "og-nl.png", "uk": "og-uk.png", "id": "og-id.png", "eo": "og-eo.png"}
 KEYS = ("hero.l1", "onepass.h", "speed.h2")
+SELECTED = sys.argv[1:]
+if [a for a in SELECTED if a not in OUTPUT]:
+    raise SystemExit(f"unknown language {[a for a in SELECTED if a not in OUTPUT]}; the keys of OUTPUT are: {', '.join(OUTPUT)}")
 
 
-# The German, French, Spanish, Portuguese, Japanese, Vietnamese and Esperanto lines are longer than
-# the space beside the icon, or need their own breaks, so each line breaks at the listed places.
+# Every language except English (its first line is handled in lines() below) and the two Chinese ones has its
+# lines broken at the listed places: they are longer than the space beside the icon, or need their own breaks.
 # Joined with a space (with nothing for Japanese, see SEP), the pieces must equal the dictionary
 # text (the check below), so changing the copy stops the script until the breaks are revisited.
 NB = "\u00a0"
@@ -47,6 +55,14 @@ BREAKS = {
            ["10× pli rapide ol 7z."]],
     "pt-BR": [["Pule o", "“Mostrar mais", "opções”."], ["Uma passada.", "Nenhum .tar no disco."],
               ["10× mais rápido que o 7z."]],
+    "ru": [["Обойдитесь", "без «Показать", "дополнительные", "параметры»."], ["Один проход.", "Без .tar на диске."], ["10× быстрее, чем 7z."]],
+    "ko": [["“추가 옵션 표시”는", "이제 건너뛰세요."], ["한 번에.", "디스크에 .tar 없이."], ["7z보다 10배 빠릅니다."]],
+    "it": [["Niente più", "«Mostra", "altre opzioni»."], ["Un solo passaggio.", "Nessun .tar su disco."], ["10× più veloce di 7z."]],
+    "pl": [["Koniec", "z „Pokaż więcej opcji”."], ["Jeden przebieg.", "Bez .tar na dysku."], ["10× szybciej niż 7z."]],
+    "tr": [["“Daha fazla", "seçenek göster”", "adımına son."], ["Tek geçiş.", "Diskte .tar yok."], ["7z’den 10× hızlı."]],
+    "nl": [["Sla", "“Meer opties weergeven”", "over."], ["In één keer.", "Geen .tar op schijf."], ["10× sneller dan 7z."]],
+    "uk": [["Обійдіться", "без «Показати", "додаткові параметри»."], ["Один прохід.", "Без .tar на диску."], ["10× швидше, ніж 7z."]],
+    "id": [["Tak perlu lagi", "“Tampilkan", "opsi lainnya”."], ["Sekali jalan.", "Tanpa .tar di disk."], ["10× lebih cepat dari 7z."]],
 }
 
 
@@ -73,6 +89,8 @@ with sync_playwright() as p:
     browser = p.chromium.launch(channel="msedge", headless=True)
     page = browser.new_page(viewport={"width": 1200, "height": 630})
     for lang, name in OUTPUT.items():
+        if SELECTED and lang not in SELECTED:
+            continue
         page.goto((root / "tools" / "og.html").as_uri())
         page.evaluate(
             """([lang, l1, l2, l3]) => {

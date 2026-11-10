@@ -71,6 +71,18 @@ def main() -> None:
     args.out.mkdir(parents=True, exist_ok=True)
     build(args.src / "NotoSansSC[wght].ttf", args.out / "noto-sans-sc.woff2", chars, (400, 900))
     build(args.src / "Unbounded[wght].ttf", args.out / "unbounded.woff2", ASCII | LATIN_EXTRA, (500, 900))
+    write_manifest(args.out)
+
+
+def write_manifest(out: Path) -> None:
+    """public/fonts/zh-hans-chars.txt: every character the two subsets really contain (read back from their
+    cmap tables, not the list that was asked for). tools/build-pages.py --strict compares the zh-Hans page against
+    it, using only the standard library, so a character the subsets lack cannot ship unnoticed."""
+    have: set[str] = set()
+    for name in ("noto-sans-sc.woff2", "unbounded.woff2"):
+        have |= {chr(c) for c in TTFont(out / name).getBestCmap()}
+    (out / "zh-hans-chars.txt").write_text("".join(sorted(have)) + "\n", encoding="utf-8", newline="\n")
+    print(f"zh-hans-chars.txt: {len(have)} characters in the two subsets")
 
 
 if __name__ == "__main__":

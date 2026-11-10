@@ -33,9 +33,11 @@ function addLink(rel, href, crossOrigin){
   --radius-s:8px; --radius-m:12px; --radius-l:16px; --radius-xl:24px;
   --shadow-1:0 1px 2px rgba(21,34,56,.06), 0 6px 18px -8px rgba(21,34,56,.18);
   --shadow-2:0 2px 6px rgba(21,34,56,.08), 0 24px 48px -20px rgba(21,34,56,.32);
+  /* header-widths:begin */
   --font-display:'Unbounded', 'Segoe UI', system-ui, sans-serif;
   --font-body:'Figtree', 'Segoe UI', system-ui, sans-serif;
   --font-mono:'IBM Plex Mono', ui-monospace, Consolas, 'Noto Sans TC', monospace;
+  /* header-widths:end */
   --hero-top:#CDEAFB; --glow:rgba(14,165,233,.35); --star-glow:.35;
   --icon-shadow:rgba(21,34,56,.35); --horizon:rgba(14,165,233,.16);
   --strip-bg:#152238; --strip-line:transparent;
@@ -99,6 +101,7 @@ function addLink(rel, href, crossOrigin){
   --ctx-hover:rgba(255,255,255,0.10); --ctx-sep:rgba(255,255,255,0.12); --ctx-fg-2:#C5CEDC;
   --wall-bg:#060C18; --wall-amber:rgba(246,166,9,.18);
 }
+/* header-widths:begin */
 html[lang="zh-Hant"]{
   --font-display:'Noto Sans TC', 'Unbounded', 'Segoe UI', system-ui, sans-serif;
   --font-body:'Noto Sans TC', 'Figtree', 'Segoe UI', system-ui, sans-serif;
@@ -110,30 +113,48 @@ html[lang="ja"]{
   --font-display:'Noto Sans JP', 'Unbounded', 'Segoe UI', system-ui, sans-serif;
   --font-body:'Noto Sans JP', 'Figtree', 'Segoe UI', system-ui, sans-serif;
 }
+/* 俄文、烏克蘭文：Figtree 沒有西里爾字母，內文改用 Onest；標題的 Unbounded 本身含西里爾字母 */
+html:is([lang="ru"],[lang="uk"]){
+  --font-body:'Onest', 'Figtree', 'Segoe UI', system-ui, sans-serif;
+}
+/* 韓文：Unbounded、Figtree、IBM Plex Mono 都沒有韓文字，和日文一樣讓 Noto Sans KR 排第一 */
+html[lang="ko"]{
+  --font-display:'Noto Sans KR', 'Unbounded', 'Segoe UI', system-ui, sans-serif;
+  --font-body:'Noto Sans KR', 'Figtree', 'Segoe UI', system-ui, sans-serif;
+  --font-mono:'IBM Plex Mono', ui-monospace, Consolas, 'Noto Sans KR', monospace;
+}
 html[lang="zh-Hans"]{
   --font-display:'Noto Sans SC', 'Unbounded', 'Segoe UI', system-ui, sans-serif;
   --font-body:'Noto Sans SC', 'Figtree', 'Segoe UI', system-ui, sans-serif;
   --font-mono:'IBM Plex Mono', ui-monospace, Consolas, 'Noto Sans SC', monospace;
 }
+/* header-widths:end */
 
 /* ===== 基礎 ===== */
 :root[data-theme="dark"]{color-scheme:dark}
 :root[data-theme="light"]{color-scheme:light}
+/* header-widths:begin */
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
+/* header-widths:end */
 a{color:inherit}
 h1,h2,h3,h4,p{margin:0}
+/* 很窄的視窗裡，一個放不下的長字（荷蘭文「Installatieprogramma」、烏克蘭文「tar-форматів」）會把整頁撐出橫向捲軸；
+   anywhere 只在整個字單獨一行也放不下時才在字內換行，並讓這些容器的最小寬度不被長字撐住。各語言共用，不針對單一語言 */
+h1,h2,h3,h4,.lede,.hero-body,.card,.sub,.honest{overflow-wrap:anywhere}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;box-shadow:0 0 0 5px var(--fg);border-radius:6px}
+/* header-widths:begin */
 .wrap{max-width:1280px;margin:0 auto;padding-inline:24px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* header-widths:end */
 .skip{position:absolute;left:16px;top:-80px;z-index:50;background:var(--btn-bg);color:var(--btn-fg);padding:12px 18px;border-radius:var(--radius-s);text-decoration:none;font-weight:700}
 .skip:focus{top:12px}
 .eyebrow{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--sky-text);line-height:1.5}
 .h2{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,3.6vw,48px);line-height:1.1}
-html[lang="en"] .h2, html[lang="en"] .h1, html[lang="en"] .big, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"]) :is(.h2,.h1,.big){letter-spacing:-0.02em}
-html[lang="zh-Hant"] .h2, html[lang="zh-Hans"] .h2, html[lang="ja"] .h2{letter-spacing:0;line-height:1.25}
+html[lang="en"] .h2, html[lang="en"] .h1, html[lang="en"] .big, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) :is(.h2,.h1,.big){letter-spacing:-0.02em}
+html[lang="zh-Hant"] .h2, html[lang="zh-Hans"] .h2, html[lang="ja"] .h2, html[lang="ko"] .h2{letter-spacing:0;line-height:1.25}
 .lede{color:var(--fg-2);font-size:18px;line-height:1.65;max-width:36em}
 section{scroll-margin-top:72px}
 
@@ -146,6 +167,7 @@ section{scroll-margin-top:72px}
 .btn-2:hover{background:color-mix(in srgb, var(--btn2-line) 10%, transparent)}
 .btn svg{width:18px;height:18px;flex:none}
 
+/* header-widths:begin */
 /* ===== 頁首 ===== */
 .top{position:sticky;top:0;z-index:30;background:var(--header-bg);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid color-mix(in srgb, var(--line) 70%, transparent)}
 .top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;min-height:64px}
@@ -178,6 +200,11 @@ section{scroll-margin-top:72px}
 /* 清單有 overflow，全站的外環會被裁掉，所以往內畫；內環不能省，淺色主題的琥珀色外框對白底只有約 2:1 */
 .lang-list a:focus-visible{outline-offset:-3px;box-shadow:inset 0 0 0 5px var(--fg)}
 .lang-list a[aria-current="true"]{font-weight:700}
+/* 18 項時清單太高：視窗夠寬就排成兩欄，先由上往下填滿第一欄（--lang-rows 是每欄列數，由建置腳本算出）。
+   視窗窄於 520px 維持單欄、清單內捲動；兩欄時 max-content 約 420px，加上右側 88px 邊界仍放得下 */
+@media (min-width:520px){
+  .lang-list{display:grid;grid-auto-flow:column;grid-template-rows:repeat(var(--lang-rows),auto);column-gap:4px}
+}
 .lang-check{width:16px;height:16px;flex:none;color:var(--sky-text)}
 .lang-list a:not([aria-current="true"]) .lang-check{visibility:hidden}
 .theme-btn{width:44px;height:44px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius-m);background:var(--surface);color:var(--fg);cursor:pointer;padding:0}
@@ -199,7 +226,7 @@ section{scroll-margin-top:72px}
   .top .wrap{flex-wrap:nowrap}
   .brand,.nav,.theme-btn{flex:none}
 }
-/* 窄版的五個步驟（語言鈕換短字、收第三個連結、換圖示、收字標、語言鈕只留地球）。各語言的門檻與先後順序不同，數字在 tools/build-pages.py 的 HEADER_WIDTHS。
+/* 窄版的五個步驟（語言鈕換短字、收第三個連結、換圖示、收字標、語言鈕只留地球）。各語言的門檻與先後順序不同，數字在 src/header-widths.json（由 tools/measure-header.py 量出，不要手改）。
    收起來的文字用裁切隱藏，螢幕報讀器仍讀得到 */
 @media (max-width:{{w_short}}px){ /* 語言鈕的全名換成短字 */
   .lang{width:auto}
@@ -222,6 +249,7 @@ section{scroll-margin-top:72px}
   .lang-short,.lang-caret{display:none}
 }
 .nw{white-space:nowrap}
+/* header-widths:end */
 
 /* ===== Hero：藍調時刻海報 ===== */
 .hero{position:relative;overflow:hidden;background:linear-gradient(180deg, var(--hero-top) 0%, var(--bg) 82%)}
@@ -232,14 +260,14 @@ section{scroll-margin-top:72px}
 .h1{display:flex;flex-direction:column;align-items:flex-start;gap:.6em;font-family:var(--font-display);font-weight:800;font-size:clamp(30px,4.6vw,64px);margin:18px 0 0;color:var(--fg)}
 .h1 .line{display:block;width:max-content;max-width:100%;font-size:1em;line-height:1.05;text-wrap:balance}
 /* 中文只在標點／空白處斷行，選單用字與詞組不被拆開 */
-html[lang="zh-Hant"] .h1 .line, html[lang="zh-Hans"] .h1 .line, html[lang="ja"] .h1 .line{line-height:1.2;letter-spacing:0;word-break:keep-all;overflow-wrap:break-word}
+html[lang="zh-Hant"] .h1 .line, html[lang="zh-Hans"] .h1 .line, html[lang="ja"] .h1 .line, html[lang="ko"] .h1 .line{line-height:1.2;letter-spacing:0;word-break:keep-all;overflow-wrap:break-word}
 /* 英文：顯示字很寬、句子又長，字級另訂；每句拆成片語（.ph，見 HERO_PHRASES），只在片語之間換行，
    選單名稱與「No .tar on disk.」不被拆開。片語放不下時才在片語內換行（極窄螢幕的退路，不會溢出） */
 html[lang="en"] .h1{font-size:clamp(21px,min((100vw - 34px) / 13.4, 6.81vw),52px)}
 @media (min-width:900px){html[lang="en"] .h1{font-size:clamp(34px,3.7vw,52px)}}
 /* 德文、法文、西班牙文、巴西葡語：句子比英文長，字級比英文小一級；片語規則同英文（HERO_PHRASES） */
-html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"]) .h1{font-size:clamp(21px,min((100vw - 34px) / 15.5, 6.2vw, 38px),52px)}
-@media (min-width:900px){html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"]) .h1{font-size:clamp(30px,2.85vw,38px)}}
+html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"],[lang="ru"],[lang="ko"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .h1{font-size:clamp(21px,min((100vw - 34px) / 15.5, 6.2vw, 38px),52px)}
+@media (min-width:900px){html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"],[lang="ru"],[lang="ko"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .h1{font-size:clamp(30px,2.85vw,38px)}}
 .h1 .ph{display:inline-block;max-width:100%}
 .l-under .ph{text-decoration:underline;text-decoration-color:var(--sky-g);text-decoration-thickness:.09em;text-underline-offset:.16em;text-decoration-skip-ink:none}
 @media (min-width:600px){
@@ -293,6 +321,9 @@ html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo
 .twin-head{display:flex;align-items:baseline;gap:16px;margin-bottom:18px}
 .big{font-family:'Unbounded', var(--font-display);font-weight:800;font-size:clamp(56px,8vw,120px);line-height:.9;color:var(--sky-text)}
 .twin h3{font-family:var(--font-display);font-weight:700;font-size:clamp(18px,1.8vw,22px);line-height:1.25}
+/* 介面語言：各語言用自己的名稱，沒有連結，所以不必做成 44px 的點擊目標。名稱用系統字型補不到的字（蒙古文、阿拉伯文等）交給瀏覽器的後備字型 */
+.app-langs{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:36px 0 0;padding:0}
+.app-langs li{padding:5px 14px;background:var(--surface);border:1px solid var(--line);border-radius:999px;font-size:15px;line-height:1.5;color:var(--fg)}
 .chips{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:0;padding:0}
 .chip{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:6px 14px 6px 8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;font-family:var(--font-mono);font-weight:600;font-size:15px;color:var(--fg)}
 .chip .fi{--w:28px}
@@ -358,8 +389,8 @@ html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo
 .speed-txt{flex:1 1 380px}
 .speed-txt .h2{margin-top:12px}
 .sub{margin-top:14px;font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2.4vw,32px);line-height:1.2}
-html[lang="en"] .sub, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"]) .sub{letter-spacing:-0.02em}
-html[lang="zh-Hant"] .sub, html[lang="zh-Hans"] .sub, html[lang="ja"] .sub{letter-spacing:0;line-height:1.3}
+html[lang="en"] .sub, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .sub{letter-spacing:-0.02em}
+html[lang="zh-Hant"] .sub, html[lang="zh-Hans"] .sub, html[lang="ja"] .sub, html[lang="ko"] .sub{letter-spacing:0;line-height:1.3}
 /* 越南文的聲調符號疊得高，標題行高要比拉丁語系的預設大一點 */
 html[lang="vi"] .h2{line-height:1.25}
 html[lang="vi"] .h1 .line{line-height:1.2}
@@ -408,7 +439,7 @@ th.zst-h{color:var(--fg)}
 .card{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:var(--radius-l);background:var(--dl-card);border:1px solid var(--dl-card-line)}
 .card.feat{border-color:#F6A609;box-shadow:0 0 0 1px #F6A609 inset}
 .card h3{font-family:var(--font-display);font-weight:700;font-size:19px;line-height:1.3;color:#FFFFFF}
-html[lang="en"] .card h3, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"]) .card h3{letter-spacing:-0.01em}
+html[lang="en"] .card h3, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .card h3{letter-spacing:-0.01em}
 .card .fn{font-family:var(--font-mono);font-size:13.5px;color:var(--on-navy-2);word-break:break-all}
 .badge{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;line-height:1.3;padding:5px 10px;border-radius:999px;background:rgba(56,189,248,.16);color:#7DD3FC;border:1px solid rgba(56,189,248,.45)}
 .badge.no{background:rgba(255,255,255,.07);color:var(--on-navy-2);border-color:rgba(255,255,255,.30)}
@@ -464,9 +495,13 @@ html:is([lang="de"],[lang="vi"]) .dn-addr{font-size:14px}
 .foot-mark{display:flex;align-items:center;gap:10px}
 .foot-mark img{width:44px;height:44px;border-radius:10px;transform:rotate(-8deg);box-shadow:0 0 0 1px var(--mark-ring)}
 
+/* header-widths:begin */
 @media (max-width:480px){
   .wrap{padding-inline:18px}
   body{font-size:16px}
+}
+/* header-widths:end */
+@media (max-width:480px){
   .lede{font-size:17px}
 }
 /* ===== #shots：實際畫面與放大檢視 ===== */
@@ -514,6 +549,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
 <body>
 <a class="skip" href="#main" data-i18n="a11y.skip"></a>
 
+<!-- header-widths:begin -->
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#" data-i18n-attr="aria-label=a11y.home">
@@ -534,7 +570,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
           <span class="lang-short" aria-hidden="true" data-i18n="lang.short"></span>
           <svg class="lang-caret" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
         </summary>
-        <ul class="lang-list" role="list" data-i18n-attr="aria-label=a11y.lang">
+        <ul class="lang-list" role="list" style="--lang-rows:{{lang_rows}}" data-i18n-attr="aria-label=a11y.lang">
 {{lang_options}}
         </ul>
       </details>
@@ -545,6 +581,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
     </div>
   </div>
 </header>
+<!-- header-widths:end -->
 
 <main id="main">
 
@@ -764,19 +801,61 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
     <h2 class="h2" id="shots-h" style="margin-top:12px" data-i18n="shots.h"></h2>
     <div class="shots">
       <figure class="shot">
-        <a href="{{assets}}screenshots/{{slug}}/main.png" data-shot><img src="{{assets}}screenshots/{{slug}}/main.png" width="{{main_w}}" height="{{main_h}}" loading="lazy" data-i18n-attr="alt=a11y.shot_main"><span class="shot-zoom" aria-hidden="true">{{zoom_icon}}</span></a>
+        <a href="{{assets}}screenshots/{{shots_slug}}/main.png" data-shot><img src="{{assets}}screenshots/{{shots_slug}}/main.png" width="{{main_w}}" height="{{main_h}}" loading="lazy" data-i18n-attr="alt=a11y.shot_main"><span class="shot-zoom" aria-hidden="true">{{zoom_icon}}</span></a>
         <figcaption><h3 data-i18n="shots.main_h"></h3><p data-i18n="shots.main_b"></p></figcaption>
       </figure>
       <figure class="shot">
-        <a href="{{assets}}screenshots/{{slug}}/menu.png" data-shot><img src="{{assets}}screenshots/{{slug}}/menu.png" width="{{menu_w}}" height="{{menu_h}}" loading="lazy" data-i18n-attr="alt=a11y.shot_menu"><span class="shot-zoom" aria-hidden="true">{{zoom_icon}}</span></a>
+        <a href="{{assets}}screenshots/{{shots_slug}}/menu.png" data-shot><img src="{{assets}}screenshots/{{shots_slug}}/menu.png" width="{{menu_w}}" height="{{menu_h}}" loading="lazy" data-i18n-attr="alt=a11y.shot_menu"><span class="shot-zoom" aria-hidden="true">{{zoom_icon}}</span></a>
         <figcaption><h3 data-i18n="shots.menu_h"></h3><p data-i18n="shots.menu_b"></p></figcaption>
       </figure>
     </div>
   </div>
 </section>
 
+<!-- ========== #languages：程式本身的介面語言（名單由 tools/make-app-languages.py 從原始碼的語言檔產生） ========== -->
+<section id="languages" class="sec sec-alt" aria-labelledby="languages-h">
+  <div class="wrap">
+    <p class="eyebrow" data-i18n="langs.eyebrow"></p>
+    <h2 class="h2" id="languages-h" style="margin-top:12px" data-i18n="langs.h"></h2>
+    <p class="lede" style="margin-top:18px" data-i18n="langs.body"></p>
+    <ul class="app-langs" role="list" data-i18n-attr="aria-label=a11y.app_langs">
+{{app_lang_items}}
+    </ul>
+  </div>
+</section>
+
+<!-- ========== #donate ========== -->
+<section id="donate" class="sec" aria-labelledby="donate-h">
+  <div class="wrap">
+    <div class="dn-grid">
+      <div class="dn-head">
+        <h2 class="h2" id="donate-h" data-i18n="donate.h"></h2>
+        <p class="dn-desc" data-i18n="donate.desc"></p>
+      </div>
+      <div class="dn-pay">
+        <p class="dn-pills"><span class="dn-pill">Ethereum</span><span class="dn-pill">Polygon</span></p>
+        <p class="dn-pay-d" data-i18n="donate.pay"></p>
+      </div>
+      <div class="dn-aside">
+        <div class="dn-addrbox">
+          <code class="dn-addr" id="dn-addr">{{donate_addr}}</code>
+          <button class="dn-copy" id="dn-copy" type="button" data-i18n="donate.copy"></button>
+          <span class="dn-status" id="dn-status" role="status" aria-live="polite"></span>
+        </div>
+        <div class="dn-qr" role="img" data-i18n-attr="aria-label=donate.qr_label">{{donate_qr}}</div>
+      </div>
+      <ul class="dn-notes">
+        <li data-i18n="donate.note1"></li>
+        <li><span data-i18n="donate.note2_start"></span><a href="{{donate_readme_url}}" data-i18n="donate.note2_link"></a><span data-i18n="donate.note2_end"></span></li>
+        <li data-i18n="donate.note3"></li>
+      </ul>
+      <p class="dn-other" data-i18n="donate.other"></p>
+    </div>
+  </div>
+</section>
+
 <!-- ========== #download ========== -->
-<section id="download" class="sec" aria-labelledby="download-h">
+<section id="download" class="sec sec-alt" aria-labelledby="download-h">
   <div class="wrap">
     <div class="dl-panel">
       <h2 class="h2" id="download-h" data-i18n="download.h"></h2>
@@ -813,36 +892,6 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
         <a href="https://github.com/7zStar/7-ZSTar/releases/download/v26.05.1/7-ZSTar-26.05.1-arm64.zip">7-ZSTar-26.05.1-arm64.zip</a>
       </div>
       <a class="src" href="https://github.com/7zStar/7-ZSTar"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6 3 10l4 4M13 6l4 4-4 4"/></svg><span data-i18n="download.source"></span></a>
-    </div>
-  </div>
-</section>
-
-<!-- ========== #donate ========== -->
-<section id="donate" class="sec sec-alt" aria-labelledby="donate-h">
-  <div class="wrap">
-    <div class="dn-grid">
-      <div class="dn-head">
-        <h2 class="h2" id="donate-h" data-i18n="donate.h"></h2>
-        <p class="dn-desc" data-i18n="donate.desc"></p>
-      </div>
-      <div class="dn-pay">
-        <p class="dn-pills"><span class="dn-pill">Ethereum</span><span class="dn-pill">Polygon</span></p>
-        <p class="dn-pay-d" data-i18n="donate.pay"></p>
-      </div>
-      <div class="dn-aside">
-        <div class="dn-addrbox">
-          <code class="dn-addr" id="dn-addr">{{donate_addr}}</code>
-          <button class="dn-copy" id="dn-copy" type="button" data-i18n="donate.copy"></button>
-          <span class="dn-status" id="dn-status" role="status" aria-live="polite"></span>
-        </div>
-        <div class="dn-qr" role="img" data-i18n-attr="aria-label=donate.qr_label">{{donate_qr}}</div>
-      </div>
-      <ul class="dn-notes">
-        <li data-i18n="donate.note1"></li>
-        <li><span data-i18n="donate.note2_start"></span><a href="{{donate_readme_url}}" data-i18n="donate.note2_link"></a><span data-i18n="donate.note2_end"></span></li>
-        <li data-i18n="donate.note3"></li>
-      </ul>
-      <p class="dn-other" data-i18n="donate.other"></p>
     </div>
   </div>
 </section>
@@ -900,9 +949,11 @@ const BENCH = [ // key, files, rawMB, zip[s,MB], 7z[s,MB], tar.zst[s,MB]
 /* ===== 2. 執行時才用到的文字：表格與長條圖的列名、贊助地址複製鈕的兩則訊息（只放本頁語言；其餘文字建置時已填入，來源 src/i18n.json） ===== */
 /* 名字沿用舊的：除了表格列名，這個物件現在也裝贊助複製鈕的 donate.copied、donate.copy_fail */
 const ROW_LABELS = {{dict_json}};
-/* 小數點與千位分隔：德文、巴西葡語、越南文用「4,1」「13.371」，法文用「4,1」「13 371」（窄不換行空格），世界語用「4,1」「13 371」（不換行空格）；
-   英文、中文、西班牙文（依拉丁美洲的 es-419 慣例）維持「4.1」「13,371」 */
-const NUM_STYLE = { 'de': [',', '.'], 'pt-BR': [',', '.'], 'fr': [',', '\u202f'], 'vi': [',', '.'], 'eo': [',', '\u00a0'] }[document.documentElement.lang];
+/* 小數點與千位分隔：德文、巴西葡語、越南文、義大利文、荷蘭文、土耳其文、印尼文用「4,1」「13.371」，
+   法文用「4,1」「13 371」（窄不換行空格），世界語、俄文、烏克蘭文、波蘭文用「4,1」「13 371」（不換行空格）；
+   英文、中文、日文、韓文、西班牙文（依拉丁美洲的 es-419 慣例）維持「4.1」「13,371」：韓文刻意沿用英文寫法，所以表中沒有 'ko' 項 */
+const NUM_STYLE = { 'de': [',', '.'], 'pt-BR': [',', '.'], 'fr': [',', '\u202f'], 'vi': [',', '.'], 'eo': [',', '\u00a0'],
+  'ru': [',', '\u00a0'], 'uk': [',', '\u00a0'], 'pl': [',', '\u00a0'], 'it': [',', '.'], 'nl': [',', '.'], 'tr': [',', '.'], 'id': [',', '.'] }[document.documentElement.lang];
 const num = v => NUM_STYLE ? String(v).replace('.', NUM_STYLE[0]) : String(v);
 const count = v => NUM_STYLE ? String(v).replace(',', NUM_STYLE[1]) : String(v);
 /* 法文介面的檔案大小單位是「Mo」 */

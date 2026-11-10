@@ -1,0 +1,493 @@
+{
+  "_note": "Written by tools/measure-header.py (headless Edge with a real scrollbar, fonts from Google Fonts); do not edit by hand. Each w_ number is the widest window, in media-query px, at which that header step applies. _measured gives the order of the steps and the smallest window each step before it fits in; _inputs is a fingerprint of the labels, CSS and fonts the numbers were measured with (build-pages.py --strict fails when it no longer matches).",
+  "en": {
+    "w_short": 599,
+    "w_narrow": 704,
+    "w_icons": 541,
+    "w_wordmark": 426,
+    "w_globe": 341
+  },
+  "zh-Hant": {
+    "w_short": 506,
+    "w_narrow": 607,
+    "w_icons": 306,
+    "w_wordmark": 440,
+    "w_globe": 354
+  },
+  "zh-Hans": {
+    "w_short": 506,
+    "w_narrow": 607,
+    "w_icons": 306,
+    "w_wordmark": 440,
+    "w_globe": 354
+  },
+  "de": {
+    "w_short": 599,
+    "w_narrow": 725,
+    "w_icons": 542,
+    "w_wordmark": 427,
+    "w_globe": 342
+  },
+  "fr": {
+    "w_short": 589,
+    "w_narrow": 700,
+    "w_icons": 527,
+    "w_wordmark": 422,
+    "w_globe": 336
+  },
+  "es": {
+    "w_short": 577,
+    "w_narrow": 684,
+    "w_icons": 518,
+    "w_wordmark": 425,
+    "w_globe": 339
+  },
+  "pt-BR": {
+    "w_short": 549,
+    "w_narrow": 656,
+    "w_icons": 489,
+    "w_wordmark": 423,
+    "w_globe": 338
+  },
+  "ja": {
+    "w_short": 816,
+    "w_narrow": 776,
+    "w_icons": 630,
+    "w_wordmark": 444,
+    "w_globe": 358
+  },
+  "vi": {
+    "w_short": 735,
+    "w_narrow": 675,
+    "w_icons": 548,
+    "w_wordmark": 423,
+    "w_globe": 338
+  },
+  "ru": {
+    "w_short": 590,
+    "w_narrow": 728,
+    "w_icons": 533,
+    "w_wordmark": 426,
+    "w_globe": 341
+  },
+  "ko": {
+    "w_short": 556,
+    "w_narrow": 640,
+    "w_icons": 513,
+    "w_wordmark": 440,
+    "w_globe": 355
+  },
+  "it": {
+    "w_short": 574,
+    "w_narrow": 679,
+    "w_icons": 509,
+    "w_wordmark": 419,
+    "w_globe": 333
+  },
+  "pl": {
+    "w_short": 591,
+    "w_narrow": 675,
+    "w_icons": 529,
+    "w_wordmark": 421,
+    "w_globe": 336
+  },
+  "tr": {
+    "w_short": 594,
+    "w_narrow": 700,
+    "w_icons": 529,
+    "w_wordmark": 418,
+    "w_globe": 333
+  },
+  "nl": {
+    "w_short": 673,
+    "w_narrow": 795,
+    "w_icons": 617,
+    "w_wordmark": 428,
+    "w_globe": 343
+  },
+  "uk": {
+    "w_short": 649,
+    "w_narrow": 733,
+    "w_icons": 592,
+    "w_wordmark": 427,
+    "w_globe": 341
+  },
+  "id": {
+    "w_short": 600,
+    "w_narrow": 710,
+    "w_icons": 538,
+    "w_wordmark": 422,
+    "w_globe": 336
+  },
+  "eo": {
+    "w_short": 690,
+    "w_narrow": 633,
+    "w_icons": 511,
+    "w_wordmark": 426,
+    "w_globe": 341
+  },
+  "_measured": {
+    "en": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        705,
+        600,
+        542,
+        427,
+        342
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "zh-Hant": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_wordmark",
+        "w_globe",
+        "w_icons"
+      ],
+      "kind": "zh",
+      "narrowest_window_before_each_step": [
+        608,
+        507,
+        441,
+        355,
+        307
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "zh-Hans": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_wordmark",
+        "w_globe",
+        "w_icons"
+      ],
+      "kind": "zh",
+      "narrowest_window_before_each_step": [
+        608,
+        507,
+        441,
+        355,
+        307
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "de": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        726,
+        600,
+        543,
+        428,
+        343
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "fr": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        701,
+        590,
+        528,
+        423,
+        337
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "es": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        685,
+        578,
+        519,
+        426,
+        340
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "pt-BR": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        657,
+        550,
+        490,
+        424,
+        339
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "ja": {
+      "order": [
+        "w_short",
+        "w_narrow",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "short-first",
+      "narrowest_window_before_each_step": [
+        817,
+        777,
+        631,
+        445,
+        359
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "vi": {
+      "order": [
+        "w_short",
+        "w_narrow",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "short-first",
+      "narrowest_window_before_each_step": [
+        736,
+        676,
+        549,
+        424,
+        339
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "ru": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        729,
+        591,
+        534,
+        427,
+        342
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "ko": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        641,
+        557,
+        514,
+        441,
+        356
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "it": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        680,
+        575,
+        510,
+        420,
+        334
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "pl": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        676,
+        592,
+        530,
+        422,
+        337
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "tr": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        701,
+        595,
+        530,
+        419,
+        334
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "nl": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        796,
+        674,
+        618,
+        429,
+        344
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "uk": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        734,
+        650,
+        593,
+        428,
+        342
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "id": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        711,
+        601,
+        539,
+        423,
+        337
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "eo": {
+      "order": [
+        "w_short",
+        "w_narrow",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "short-first",
+      "narrowest_window_before_each_step": [
+        691,
+        634,
+        512,
+        427,
+        342
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    }
+  },
+  "_inputs": {
+    "en": "4746b10d0e255ad3",
+    "zh-Hant": "bd39399c9f846491",
+    "zh-Hans": "8ce295850fe4dede",
+    "de": "103af8156ee03d62",
+    "fr": "3312d0e66470a58c",
+    "es": "078aa5fee5e2a181",
+    "pt-BR": "28048d0697f7f99f",
+    "ja": "d8ab194d5491ef89",
+    "vi": "db7d90f73fff3f3c",
+    "ru": "fa645243288eb044",
+    "ko": "aebd1862019c7d25",
+    "it": "05aa21c58bae34d4",
+    "pl": "9a02c77c58866f81",
+    "tr": "10c59a0d34b7c126",
+    "nl": "59a8ada0d0c30a2f",
+    "uk": "feb2d0bd3b446949",
+    "id": "c21e5a107fc4064e",
+    "eo": "b4a6ab30c14c4df2"
+  }
+}

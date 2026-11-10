@@ -36,8 +36,10 @@ jobs:
           persist-credentials: false
 
       # Standard library only; python3 ships with the runner image.
+      # --strict stops the build while any language is still a draft or lacks its own screenshots,
+      # share image or measured header widths, so an unfinished language page can never be published.
       - name: Build the language pages
-        run: python3 tools/build-pages.py
+        run: python3 tools/build-pages.py --strict
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
