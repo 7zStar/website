@@ -83,7 +83,7 @@ FIREFOX_EXTRA = 2    # Firefox's is 17px: measure with the page this much narrow
 # The order in which the five steps switch on, per kind of language. Orders the site shipped with until
 # 2026-11-09 (the hand-written table this tool replaced); "default" is also what every new language starts with.
 ORDERS = {
-    "default": ["w_narrow", "w_short", "w_icons", "w_wordmark", "w_globe"],       # en, de, fr, es, pt-BR and the batch-1 languages
+    "default": ["w_narrow", "w_short", "w_icons", "w_wordmark", "w_globe"],       # en, de, fr, es, pt-BR and every language added since, right-to-left ones included
     "zh": ["w_narrow", "w_short", "w_wordmark", "w_globe", "w_icons"],            # short links stay text, icons last
     "short-first": ["w_short", "w_narrow", "w_icons", "w_wordmark", "w_globe"],    # vi, eo, ja: the language button shortens first
 }
@@ -136,11 +136,17 @@ LOOK = """
     const cw = document.documentElement.clientWidth;
     const kids = [...wrap.children];
     const rects = kids.map(k => k.getBoundingClientRect());
-    const pad = parseFloat(getComputedStyle(wrap).paddingRight);
+    /* A right-to-left page (ar, fa, he) lays the header out mirrored: the first item is at the right, the last
+       at the left, so "next to it" and "past the page padding" are measured on the other edges */
+    const rtl = getComputedStyle(document.documentElement).direction === 'rtl';
+    const pad = parseFloat(getComputedStyle(wrap)[rtl ? 'paddingLeft' : 'paddingRight']);
     const why = [];
     if (new Set(rects.map(r => Math.round(r.top))).size > 1) why.push('wrapped');
-    for (let i = 0; i + 1 < rects.length; i++) if (rects[i].right > rects[i + 1].left + 0.5) why.push('overlap');
-    if (rects[rects.length - 1].right > wrap.getBoundingClientRect().right - pad + 0.5) why.push('overflow');
+    for (let i = 0; i + 1 < rects.length; i++) {
+      if (rtl ? rects[i].left < rects[i + 1].right - 0.5 : rects[i].right > rects[i + 1].left + 0.5) why.push('overlap');
+    }
+    const last = rects[rects.length - 1], box = wrap.getBoundingClientRect();
+    if (rtl ? last.left < box.left + pad - 0.5 : last.right > box.right - pad + 0.5) why.push('overflow');
     for (const k of kids) if (k.scrollWidth > k.clientWidth + 1) why.push('clipped ' + k.className);
     const links = [...document.querySelectorAll('.nav a')].filter(a => getComputedStyle(a).display !== 'none');
     if (new Set(links.map(a => Math.round(a.getBoundingClientRect().top))).size > 1) why.push('nav wrapped');
@@ -407,6 +413,8 @@ def wait_for_fonts(page, lang: str, sentinel: bool = False) -> None:
     body = page.evaluate("getComputedStyle(document.body).fontFamily.split(',')[0].trim().replace(/['\\\"]/g, '')")
     # zh-Hans loads its fonts from public/fonts/zh-hans.css instead of Google
     wanted = ["Noto Sans SC"] if lang == "zh-Hans" else ["Unbounded", body]
+    if lang in build_pages.SCRIPT_FONTS:  # th el hi ar fa he: the nav labels are in the script family, wait for it too
+        wanted.append(build_pages.SCRIPT_FONTS[lang])
     for attempt in (1, 2):
         try:
             page.wait_for_function(

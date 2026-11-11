@@ -29,6 +29,7 @@ and the build only prints a warning for it. With --strict the same problems stop
 exit status 1, so a draft can never reach the published site.
 """
 import argparse
+import functools
 import hashlib
 import json
 import re
@@ -119,10 +120,45 @@ PAGES = {
     "nl": {"slug": "nl", "name": "Nederlands", "locale": "nl_NL", "og": "og-nl.png"},
     "uk": {"slug": "uk", "name": "Українська", "locale": "uk_UA", "og": "og-uk.png"},
     "id": {"slug": "id", "name": "Bahasa Indonesia", "locale": "id_ID", "og": "og-id.png"},
+    # Batch 2, same rules as batch 1. ar, fa and he are written right to left ("dir": "rtl"): their pages get
+    # <html dir="rtl"> and the layout mirrors (see RTL below and the logical properties in src/page.template.html).
+    "th": {"slug": "th", "name": "ไทย", "locale": "th_TH", "og": "og-th.png"},
+    "cs": {"slug": "cs", "name": "Čeština", "locale": "cs_CZ", "og": "og-cs.png"},
+    "hu": {"slug": "hu", "name": "Magyar", "locale": "hu_HU", "og": "og-hu.png"},
+    "ro": {"slug": "ro", "name": "Română", "locale": "ro_RO", "og": "og-ro.png"},
+    "sv": {"slug": "sv", "name": "Svenska", "locale": "sv_SE", "og": "og-sv.png"},
+    "el": {"slug": "el", "name": "Ελληνικά", "locale": "el_GR", "og": "og-el.png"},
+    "hi": {"slug": "hi", "name": "हिन्दी", "locale": "hi_IN", "og": "og-hi.png"},
+    "ar": {"slug": "ar", "name": "العربية", "locale": "ar_SA", "og": "og-ar.png", "dir": "rtl"},
+    "fa": {"slug": "fa", "name": "فارسی", "locale": "fa_IR", "og": "og-fa.png", "dir": "rtl"},
+    "he": {"slug": "he", "name": "עברית", "locale": "he_IL", "og": "og-he.png", "dir": "rtl"},
     # Esperanto stays last: the menu is read top to bottom and it is the one constructed language.
     "eo": {"slug": "eo", "name": "Esperanto", "locale": "eo_EO", "og": "og-eo.png"},
 }
 DEFAULT = "en"
+
+# Languages written right to left. Their pages carry <html dir="rtl">; every other page has no dir attribute.
+RTL = {lang for lang, page in PAGES.items() if page.get("dir") == "rtl"}
+LRM, RLM = chr(0x200E), chr(0x200F)  # left-to-right / right-to-left marks; see isolate_ltr
+
+
+def strip_marks(value: str) -> str:
+    """A value of a right-to-left page without U+200E / U+200F. The page isolates Latin words itself (isolate_ltr), so a
+    mark in a text element would double it. fill_text, check_hero_phrases and tools/make-og.py all use this one rule,
+    so the page, the HERO_PHRASES check and the share image never disagree about what the text is."""
+    return value.replace(LRM, "").replace(RLM, "")
+
+# A script font per language whose letters Unbounded, Figtree and IBM Plex Mono do not have. Checked against Google
+# Fonts' unicode-range subsets on 2026-11-10: Unbounded and Figtree have no Greek, Thai, Devanagari, Arabic or Hebrew;
+# IBM Plex Mono has none either; Latin Extended (cs hu ro sv: ě š č ř ž ő ű ă â î ș ț å ä ö) is in all three.
+# Noto Sans is the one family that has Greek here; Vazirmatn is the Persian face (Noto Sans Arabic would also cover
+# every Persian letter, but Vazirmatn is the one Persian readers expect).
+# The same table is written in two more places, and a language added here must be added there too:
+#   - src/page.template.html: html[lang="xx"]{--script:'Family'}, and xx in the html:is(...) list that sets
+#     --font-display / --font-body (build_page calls check_script_fonts, which stops the build, and tools/measure-header.py, when they differ);
+#   - tools/og.html: a <link> for the family and an html[lang="xx"] .lines rule (tools/make-og.py checks them).
+SCRIPT_FONTS = {"th": "Noto Sans Thai", "el": "Noto Sans", "hi": "Noto Sans Devanagari", "ar": "Noto Sans Arabic",
+                "fa": "Vazirmatn", "he": "Noto Sans Hebrew"}
 
 SPACELESS = {"ja"}
 
@@ -209,6 +245,58 @@ HERO_PHRASES = {
         "onepass.h": "Sekali jalan.|Tanpa .tar di disk.",
         "speed.h2": "10× lebih cepat|dari 7z.",
     },
+    # Batch 2. The right-to-left ones (ar, fa, he) hold no U+200E / U+200F: the Latin words are isolated by the
+    # page (isolate_ltr below), not by control characters in the text.
+    "th": {
+        "hero.l1": "ไม่ต้องกด|“แสดงตัวเลือกเพิ่มเติม” อีกต่อไป",
+        "onepass.h": "จบในขั้นเดียว|ไม่มี .tar บนดิสก์",
+        "speed.h2": "เร็วกว่า 7z|10 เท่า",
+    },
+    "cs": {
+        "hero.l1": "Už žádné|„Zobrazit další možnosti“.",
+        "onepass.h": "Jeden průchod.|Žádný .tar na disku.",
+        "speed.h2": "10× rychleji|než 7z.",
+    },
+    "hu": {
+        "hero.l1": "Ugord át|a „További lehetőségek megjelenítése” lépést.",
+        "onepass.h": "Egyetlen menet.|Nincs .tar a lemezen.",
+        "speed.h2": "10× gyorsabb,|mint a 7z.",
+    },
+    "ro": {
+        "hero.l1": "Fără|„Afișați mai multe opțiuni”.",
+        "onepass.h": "O singură trecere.|Fără .tar pe disc.",
+        "speed.h2": "De 10 ori mai rapid|decât 7z.",
+    },
+    "sv": {
+        "hero.l1": "Hoppa över|”Visa fler alternativ”.",
+        "onepass.h": "Ett svep.|Ingen .tar på disk.",
+        "speed.h2": "10× snabbare|än 7z.",
+    },
+    "el": {
+        "hero.l1": "Τέλος στο|«Εμφάνιση περισσότερων επιλογών».",
+        "onepass.h": "Ένα πέρασμα.|Κανένα .tar στον δίσκο.",
+        "speed.h2": "10× ταχύτερα|από το 7z.",
+    },
+    "hi": {
+        "hero.l1": "अब “Show more options” की|ज़रूरत नहीं।",
+        "onepass.h": "एक ही बार में।|डिस्क पर कोई .tar नहीं।",
+        "speed.h2": "7z से|10× तेज़।",
+    },
+    "ar": {
+        "hero.l1": "لا حاجة بعد الآن|إلى «إظهار المزيد من الخيارات».",
+        "onepass.h": "خطوة واحدة.|لا ملف .tar على القرص.",
+        "speed.h2": "أسرع 10 مرات|من 7z.",
+    },
+    "fa": {
+        "hero.l1": "دیگر نیازی به|«Show more options» نیست.",
+        "onepass.h": "یک مرحله.|بدون .tar روی دیسک.",
+        "speed.h2": "10 برابر|سریع‌تر از 7z.",
+    },
+    "he": {
+        "hero.l1": "בלי ללחוץ על|“הצג אפשרויות נוספות”.",
+        "onepass.h": "מעבר אחד.|בלי .tar בדיסק.",
+        "speed.h2": "דחיסה מהירה|פי 10 מ־7z.",
+    },
 }
 
 # Where the README's Donate section will be (the repo is private until the first public release,
@@ -254,12 +342,14 @@ ZOOM_ICON = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 
 
 def lang_options(current: str) -> str:
-    """The language menu's links, one per entry in PAGES."""
+    """The language menu's links, one per entry in PAGES. Each language's own name carries its lang and its
+    writing direction, so a right-to-left name keeps its own order inside a left-to-right menu (and the other way round)."""
     rows = []
     for lang, page in PAGES.items():
         mark = ' aria-current="true"' if lang == current else ""
+        way = "rtl" if lang in RTL else "ltr"
         rows.append(f'          <li><a href="/{page["slug"]}/" hreflang="{lang}" lang="{lang}" data-lang-set="{lang}"{mark}>'
-                    f'<span>{text(page["name"])}</span>{CHECK_ICON}</a></li>')
+                    f'<span lang="{lang}" dir="{way}">{text(page["name"])}</span>{CHECK_ICON}</a></li>')
     return "\n".join(rows)
 
 
@@ -316,28 +406,76 @@ def fill_attrs(html: str, d: dict, used: set[str]) -> str:
     return ATTR_TAG.sub(repl, html)
 
 
+# The ways a language writes "10 times" in speed.h2, which fill_text highlights in amber: (regular expression, an
+# example for the warning). A language that writes it another way needs its form added here, or the build warns.
+HIGHLIGHT_FORMS = (
+    # Written together with the number (×, 倍, 배) needs no word boundary. A phrase written as separate words has one at
+    # both ends, so "10 orice" or a word that merely ends in פי is not taken for "10 ori" / "פי 10". Thai has no spaces
+    # between words, so its form only has the boundary before the number.
+    (r"\d+×", "10×"), (r"\d+ ?倍", "10 倍"), (r"(?<!\w)\d+ lần(?!\w)", "10 lần"), (r"\d+배", "10배"),
+    (r"(?<!\w)\d+ ori(?!\w)", "10 ori"), (r"(?<!\w)\d+ เท่า", "10 เท่า"), (r"(?<!\w)\d+ مرات(?!\w)", "10 مرات"),
+    (r"(?<!\w)\d+ برابر(?!\w)", "10 برابر"), (r"(?<!\w)פי \d+(?!\w)", "פי 10"),
+)
+HIGHLIGHT_RULE = re.compile("|".join(pattern for pattern, _ in HIGHLIGHT_FORMS))
+
+# A run of Latin words in a right-to-left sentence: words of ASCII letters, digits and . _ + - / : × joined by single
+# spaces (".tar", "tar.zst", "7-ZSTar 26.05.1", "Show more options", "Windows 11"). Only runs that hold an ASCII letter
+# are isolated; a bare number needs no help from the page.
+LTR_WORD = r"\.?[A-Za-z0-9][A-Za-z0-9._+\-/:×]*"
+LTR_RUN = re.compile(rf"{LTR_WORD}(?: {LTR_WORD})*")
+
+
+def isolate_ltr(value: str) -> str:
+    """HTML for one piece of text on a right-to-left page: every run of Latin words (brand names, file extensions,
+    versions, dates like 2026-11, English menu words) is wrapped in <bdi dir="ltr">, so it keeps its own order and the full stop or
+    quote next to it stays where the sentence needs it, whatever the surrounding Arabic, Persian or Hebrew is.
+    The page does this itself; the dictionary carries no U+200E / U+200F for these places. A run that holds a brand
+    name also gets class nw (no break after the hyphen of 7-ZSTar)."""
+    out, at = [], 0
+    for m in LTR_RUN.finditer(value):
+        run = m.group(0)
+        trimmed = run.rstrip(".:-/")  # a full stop after the last word belongs to the sentence
+        # A run with a letter, or a number with a hyphen or slash inside ("2026-11"): after an Arabic or Persian letter
+        # the digits count as Arabic-Indic numbers, whose hyphen is not a number separator, so "2026-11" would show as
+        # "11-2026" (Hebrew does not do this). A plain number needs nothing.
+        if not (re.search(r"[A-Za-z]", trimmed) or re.search(r"\d[-/]\d", trimmed)):
+            continue
+        out.append(text(value[at:m.start()]))
+        css = ' class="nw"' if BRAND.search(trimmed) else ""
+        out.append(f'<bdi dir="ltr"{css}>{text(trimmed)}</bdi>')
+        at = m.start() + len(trimmed)
+    out.append(text(value[at:]))
+    return "".join(out)
+
+
 def fill_text(html: str, d: dict, lang: str, used: set[str]) -> str:
     before = Counter(re.findall(r'data-i18n="([^"]+)"', html))
     done: Counter = Counter()
     hero = re.search(r'<h1\b[^>]*\bid="hero-h"[^>]*>.*?</h1>', html, re.S)
     hero_span = hero.span() if hero else (0, 0)
+    rtl = lang in RTL
+    plain = isolate_ltr if rtl else text  # one piece of text -> HTML
 
     def repl(m: re.Match) -> str:
         tag, attrs, key = m.group(1), m.group(2), m.group(3)
         value = d[key]
         used.add(key)
         done[key] += 1
+        if rtl and tag != "text":
+            # U+200E / U+200F in a value would double what isolate_ltr already does; SVG <text> cannot hold <bdi>
+            # and keeps them, and so do the values used outside text elements (head, aria-label, alt, script strings).
+            value = strip_marks(value)
         # Steps in this order: highlight the number, keep brand names unbroken, split hero phrases
         if re.search(r"\sdata-hl(\s|$)", attrs):
-            hit = re.search(r"\d+×|\d+ ?倍|\d+ lần|\d+배", value)
+            hit = HIGHLIGHT_RULE.search(value)
             if hit:
-                body = (text(value[:hit.start()]) + f'<span class="hl">{text(hit.group(0))}</span>'
-                        + text(value[hit.end():]))
+                body = (plain(value[:hit.start()]) + f'<span class="hl">{text(hit.group(0))}</span>'
+                        + plain(value[hit.end():]))
                 return f"<{tag}{attrs}>{body}</{tag}>"
             # A language whose "10 times" is written another way would silently lose the amber highlight.
-            warn(lang, f"{key} has no number the highlight rule knows (10×, 10 倍, 10 lần, 10배): {value!r}; "
-                       "add its form to the regular expression in fill_text")
-        if tag != "text" and BRAND.search(value):  # SVG <text> is left as plain text
+            warn(lang, f"{key} has no number the highlight rule knows ({', '.join(example for _, example in HIGHLIGHT_FORMS)}): "
+                       f"{value!r}; add its form to HIGHLIGHT_FORMS")
+        if tag != "text" and not rtl and BRAND.search(value):  # SVG <text> is left as plain text
             parts = BRAND.split(value)
             body = "".join(f'<span class="nw">{text(p)}</span>' if i % 2 else text(p)
                            for i, p in enumerate(parts) if p)
@@ -349,9 +487,9 @@ def fill_text(html: str, d: dict, lang: str, used: set[str]) -> str:
                 if joiner.join(hint.split("|")) != value:
                     raise SystemExit(f"[{lang}] HERO_PHRASES[{key!r}] = {hint!r} no longer matches the "
                                      f"dictionary text {value!r}; update HERO_PHRASES together with src/i18n.json")
-                body = joiner.join(f'<span class="ph">{text(p)}</span>' for p in hint.split("|"))
+                body = joiner.join(f'<span class="ph">{plain(p)}</span>' for p in hint.split("|"))
                 return f"<{tag}{attrs}>{body}</{tag}>"
-        return f"<{tag}{attrs}>{text(value)}</{tag}>"
+        return f"<{tag}{attrs}>{text(value) if tag == 'text' else plain(value)}</{tag}>"
 
     out = TEXT_EL.sub(repl, html)
     # An element that holds anything between its tags (even a space) is not matched and would
@@ -381,7 +519,11 @@ def google_fonts_url(lang: str) -> str:
     Mono cover Latin, Latin Extended (Polish, Turkish), Vietnamese and Cyrillic but no Hangul; Figtree
     covers only Latin and Latin Extended, so /ru/ and /uk/ take Onest (Latin + Cyrillic) for the body
     text and /ko/ takes Noto Sans KR for Hangul and the Latin letters around it, the way /ja/ does.
-    The other new languages (pl, tr, it, nl, id) need no CJK family, so they leave Noto Sans TC out."""
+    The other new languages (pl, tr, it, nl, id) need no CJK family, so they leave Noto Sans TC out.
+    Batch 2 (checked against the same unicode-range subsets on 2026-11-10): cs, hu, ro and sv are Latin Extended and
+    take the same three families as pl and tr; th, el, hi, ar, fa and he keep those three for the Latin letters
+    around them (7z, .tar, 26.05.1) and add the language's script family from SCRIPT_FONTS, which the page's font
+    stack falls back to for every letter the first families do not have."""
     if lang == "vi":
         families = "Unbounded:wght@500..900&family=Plus+Jakarta+Sans:wght@400..800&family=IBM+Plex+Mono:wght@400;600"
     elif lang in ("ru", "uk"):
@@ -389,8 +531,11 @@ def google_fonts_url(lang: str) -> str:
     elif lang == "ko":
         families = ("Unbounded:wght@500..900&family=IBM+Plex+Mono:wght@400;600"
                     "&family=Noto+Sans+KR:wght@400;500;700;900")
-    elif lang in ("pl", "tr", "it", "nl", "id"):
+    elif lang in ("pl", "tr", "it", "nl", "id", "cs", "hu", "ro", "sv"):
         families = "Unbounded:wght@500..900&family=Figtree:wght@400..800&family=IBM+Plex+Mono:wght@400;600"
+    elif lang in SCRIPT_FONTS:
+        families = ("Unbounded:wght@500..900&family=Figtree:wght@400..800&family=IBM+Plex+Mono:wght@400;600"
+                    f"&family={SCRIPT_FONTS[lang].replace(' ', '+')}:wght@400..800")
     else:
         cjk = "Noto+Sans+JP" if lang == "ja" else "Noto+Sans+TC"
         families = ("Unbounded:wght@500..900&family=Figtree:wght@400..800"
@@ -489,7 +634,10 @@ def header_inputs(lang: str, d: dict, template: str) -> str:
     chunks = [re.sub(r"\s+", " ", re.sub(r"/\*.*?\*/|<!--.*?-->", "", part, flags=re.S)).strip() for part in parts]
     labels = [d[k] for k in ("nav.download", "nav.shots", "nav.source", "lang.short")] + [PAGES[lang]["name"]]
     fonts = "self-hosted zh-hans.css" if lang == "zh-Hans" else google_fonts_url(lang)
-    blob = json.dumps([chunks, labels, fonts], ensure_ascii=False)
+    parts_of_blob = [chunks, labels, fonts]
+    if lang in RTL:
+        parts_of_blob.append("rtl")  # a mirrored header is a different header; LTR pages keep their old fingerprint
+    blob = json.dumps(parts_of_blob, ensure_ascii=False)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
 
 
@@ -507,6 +655,7 @@ def header_widths_for(lang: str, table: dict[str, dict[str, int]]) -> dict[str, 
 def build_page(template: str, i18n: dict, lang: str, widths: dict[str, int] | None = None) -> str:
     """One language page. `widths` replaces the language's measured header widths (the measuring tool
     passes impossible sentinel values here, so that it can switch each step on and off itself)."""
+    check_script_fonts(template)  # every way in (the build, tools/measure-header.py) meets the font-table check
     d = fill_counts(i18n[lang])
     used: set[str] = set()
     body = fill_attrs(template, d, used)
@@ -530,6 +679,7 @@ def build_page(template: str, i18n: dict, lang: str, widths: dict[str, int] | No
         "main_w": str(main_w), "main_h": str(main_h), "menu_w": str(menu_w), "menu_h": str(menu_h),
         "zoom_icon": ZOOM_ICON,
         "lang": lang,
+        "dir_attr": ' dir="rtl"' if lang in RTL else "",
         "head": head_block(d, lang, url(lang), "../", og),
         "assets": "../",
         "slug": PAGES[lang]["slug"],
@@ -539,7 +689,8 @@ def build_page(template: str, i18n: dict, lang: str, widths: dict[str, int] | No
         "dict_json": dict_json,
         "lang_name": text(PAGES[lang]["name"]),
         "lang_options": lang_options(lang),
-        "lang_rows": str((len(PAGES) + 1) // 2),
+        "lang_rows": str((len(PAGES) + 1) // 2),    # rows per column when the menu has two columns
+        "lang_rows3": str((len(PAGES) + 2) // 3),   # and when it has three
         "app_lang_items": app_language_items(),
     })
     check_no_placeholder(html, lang)
@@ -551,14 +702,15 @@ def build_page(template: str, i18n: dict, lang: str, widths: dict[str, int] | No
 def tag_table() -> dict[str, str]:
     table = {lang.split("-")[0].lower(): lang for lang in PAGES if not lang.startswith("zh")}
     table["in"] = "id"
+    table["iw"] = "he"  # Hebrew's old code, still what some browsers and Java report
     return table
 
 
 def build_root(template: str, i18n: dict) -> str:
     d = fill_counts(i18n[DEFAULT])
     paths = {lang: f"/{page['slug']}/" for lang, page in PAGES.items()}
-    links = "\n".join(f'    <li><a href="/{page["slug"]}/" lang="{lang}" hreflang="{lang}">{text(page["name"])}</a></li>'
-                      for lang, page in PAGES.items())
+    links = "\n".join(f'    <li><a href="/{page["slug"]}/" lang="{lang}" dir="{"rtl" if lang in RTL else "ltr"}" '
+                      f'hreflang="{lang}">{text(page["name"])}</a></li>' for lang, page in PAGES.items())
     html = fill(template, {
         "head": head_block(d, DEFAULT, f"{SITE}/", "", PAGES[DEFAULT]["og"]),
         "paths_js": json.dumps(paths, ensure_ascii=False),
@@ -599,7 +751,10 @@ def check_hero_phrases(i18n: dict) -> None:
         for key, hint in table.items():
             if key not in i18n[lang]:
                 raise SystemExit(f"[{lang}] HERO_PHRASES[{key!r}]: no such key in the dictionary")
-            if joiner.join(hint.split("|")) != i18n[lang][key]:
+            value = i18n[lang][key]
+            if lang in RTL:  # fill_text drops the direction marks of a right-to-left value before it compares
+                value = strip_marks(value)
+            if joiner.join(hint.split("|")) != value:
                 raise SystemExit(f"[{lang}] HERO_PHRASES[{key!r}] = {hint!r} no longer matches the "
                                  f"dictionary text {i18n[lang][key]!r}; update HERO_PHRASES together with src/i18n.json")
 
@@ -632,6 +787,41 @@ def load_app_languages() -> dict:
     if not rows or not all(isinstance(e, dict) and {"code", "lang", "name"} <= set(e) and e["name"].strip() for e in rows):
         raise SystemExit('src/app-languages.json: every entry in "languages" needs code, lang and a non-empty name')
     return data
+
+
+@functools.cache  # build_page asks once per page; a template that passes is checked once (a failure raises, so it is not cached)
+def check_script_fonts(template: str) -> None:
+    """SCRIPT_FONTS (which families the page loads from Google, see google_fonts_url) and the page's CSS (which family a
+    language falls back to) are two copies of one table. If they drift, the page loads a font it never uses (the
+    browser then never downloads it, and tools/measure-header.py waits for it in vain) or uses one it never loaded.
+    Every SCRIPT_FONTS entry needs html[lang="xx"]{--script:'Family'} in the template and xx in the html:is(...) list
+    that gives the page its font stacks, and the template must declare no --script that SCRIPT_FONTS does not have.
+    tools/make-og.py makes the same check for tools/og.html."""
+    declared = dict(re.findall(r"""html\[lang="([\w-]+)"\]\{--script:'([^']+)'\}""", template))
+    block = re.search(r"html:is\(([^)]*)\)\{\s*--font-display", template)
+    listed = set(re.findall(r'\[lang="([\w-]+)"\]', block.group(1))) if block else set()
+    problems = []
+    if not block:
+        problems.append("src/page.template.html has no html:is(...){ --font-display ... } rule for the script languages")
+    for lang, family in SCRIPT_FONTS.items():
+        if lang not in PAGES:
+            problems.append(f"SCRIPT_FONTS names {lang}, which is not in PAGES")
+        if declared.get(lang) != family:
+            problems.append(f"src/page.template.html should have html[lang=\"{lang}\"]{{--script:'{family}'}} "
+                            f"(SCRIPT_FONTS), found {declared.get(lang)!r}")
+        if block and lang not in listed:
+            problems.append(f"src/page.template.html: add [lang=\"{lang}\"] to the html:is(...) list that sets --font-display "
+                            "and --font-body")
+    for lang in declared:
+        if lang not in SCRIPT_FONTS:
+            problems.append(f"src/page.template.html declares --script for {lang}, which SCRIPT_FONTS does not have")
+    for lang in listed:
+        if lang not in SCRIPT_FONTS:
+            problems.append(f"src/page.template.html lists [lang=\"{lang}\"] in the script-font html:is(...) rule, "
+                            "but SCRIPT_FONTS does not have it")
+    if problems:
+        raise SystemExit("SCRIPT_FONTS in tools/build-pages.py and src/page.template.html do not match:\n  "
+                         + "\n  ".join(problems))
 
 
 ZH_HANS_CHARS = ROOT / "public" / "fonts" / "zh-hans-chars.txt"

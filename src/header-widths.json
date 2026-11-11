@@ -119,6 +119,76 @@
     "w_wordmark": 422,
     "w_globe": 336
   },
+  "th": {
+    "w_short": 579,
+    "w_narrow": 694,
+    "w_icons": 520,
+    "w_wordmark": 424,
+    "w_globe": 339
+  },
+  "cs": {
+    "w_short": 558,
+    "w_narrow": 651,
+    "w_icons": 500,
+    "w_wordmark": 426,
+    "w_globe": 340
+  },
+  "hu": {
+    "w_short": 607,
+    "w_narrow": 706,
+    "w_icons": 546,
+    "w_wordmark": 422,
+    "w_globe": 336
+  },
+  "ro": {
+    "w_short": 574,
+    "w_narrow": 698,
+    "w_icons": 512,
+    "w_wordmark": 422,
+    "w_globe": 336
+  },
+  "sv": {
+    "w_short": 595,
+    "w_narrow": 701,
+    "w_icons": 529,
+    "w_wordmark": 418,
+    "w_globe": 332
+  },
+  "el": {
+    "w_short": 578,
+    "w_narrow": 697,
+    "w_icons": 519,
+    "w_wordmark": 425,
+    "w_globe": 340
+  },
+  "hi": {
+    "w_short": 553,
+    "w_narrow": 635,
+    "w_icons": 500,
+    "w_wordmark": 430,
+    "w_globe": 345
+  },
+  "ar": {
+    "w_short": 574,
+    "w_narrow": 676,
+    "w_icons": 521,
+    "w_wordmark": 431,
+    "w_globe": 345
+  },
+  "fa": {
+    "w_short": 570,
+    "w_narrow": 672,
+    "w_icons": 522,
+    "w_wordmark": 436,
+    "w_globe": 351
+  },
+  "he": {
+    "w_short": 559,
+    "w_narrow": 675,
+    "w_icons": 516,
+    "w_wordmark": 441,
+    "w_globe": 355
+  },
   "eo": {
     "w_short": 690,
     "w_narrow": 633,
@@ -450,6 +520,196 @@
       "narrowest_window_with_all_steps": 300,
       "notes": []
     },
+    "th": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        695,
+        580,
+        521,
+        425,
+        340
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "cs": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        652,
+        559,
+        501,
+        427,
+        341
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "hu": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        707,
+        608,
+        547,
+        423,
+        337
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "ro": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        699,
+        575,
+        513,
+        423,
+        337
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "sv": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        702,
+        596,
+        530,
+        419,
+        333
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "el": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        698,
+        579,
+        520,
+        426,
+        341
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "hi": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        636,
+        554,
+        501,
+        431,
+        346
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "ar": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        677,
+        575,
+        522,
+        432,
+        346
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "fa": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        673,
+        571,
+        523,
+        437,
+        352
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
+    "he": {
+      "order": [
+        "w_narrow",
+        "w_short",
+        "w_icons",
+        "w_wordmark",
+        "w_globe"
+      ],
+      "kind": "default",
+      "narrowest_window_before_each_step": [
+        676,
+        560,
+        517,
+        442,
+        356
+      ],
+      "narrowest_window_with_all_steps": 300,
+      "notes": []
+    },
     "eo": {
       "order": [
         "w_short",
@@ -471,23 +731,33 @@
     }
   },
   "_inputs": {
-    "en": "4746b10d0e255ad3",
-    "zh-Hant": "bd39399c9f846491",
-    "zh-Hans": "8ce295850fe4dede",
-    "de": "103af8156ee03d62",
-    "fr": "3312d0e66470a58c",
-    "es": "078aa5fee5e2a181",
-    "pt-BR": "28048d0697f7f99f",
-    "ja": "d8ab194d5491ef89",
-    "vi": "db7d90f73fff3f3c",
-    "ru": "fa645243288eb044",
-    "ko": "aebd1862019c7d25",
-    "it": "05aa21c58bae34d4",
-    "pl": "9a02c77c58866f81",
-    "tr": "10c59a0d34b7c126",
-    "nl": "59a8ada0d0c30a2f",
-    "uk": "feb2d0bd3b446949",
-    "id": "c21e5a107fc4064e",
-    "eo": "b4a6ab30c14c4df2"
+    "en": "d04eda4a8a3295da",
+    "zh-Hant": "90d39c102b045b47",
+    "zh-Hans": "0bb0e090b0623c5b",
+    "de": "4099e16b97a0ea9b",
+    "fr": "926d17bad99dcd50",
+    "es": "f63e856c8882269c",
+    "pt-BR": "2d9a94cb737c71c6",
+    "ja": "9aba8f0d9c5fc7e8",
+    "vi": "caedab695889daca",
+    "ru": "69ddd91e6534f205",
+    "ko": "87e2fccd68ed0aac",
+    "it": "bef37db67d3124b7",
+    "pl": "c321e829ef45123d",
+    "tr": "6d787c99e1fbca06",
+    "nl": "f49875ef5f2b3c13",
+    "uk": "28681cc1c351dec9",
+    "id": "ba4457f3166184d3",
+    "th": "d9e4b330e5a6a91e",
+    "cs": "cc32671fece54854",
+    "hu": "df89a74e023a87bd",
+    "ro": "888c875310d06e4a",
+    "sv": "6f6f1f934c59b525",
+    "el": "1ffe844d31863d09",
+    "hi": "50d9052153483342",
+    "ar": "f750301b0b1abe3f",
+    "fa": "43416a539143bba5",
+    "he": "5cdc6c9eadd287dc",
+    "eo": "6e91dc046686fac6"
   }
 }

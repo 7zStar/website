@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{lang}}">
+<html lang="{{lang}}"{{dir_attr}}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -128,6 +128,23 @@ html[lang="zh-Hans"]{
   --font-body:'Noto Sans SC', 'Figtree', 'Segoe UI', system-ui, sans-serif;
   --font-mono:'IBM Plex Mono', ui-monospace, Consolas, 'Noto Sans SC', monospace;
 }
+/* 泰、希臘、印地、阿拉伯、波斯、希伯來文：Unbounded、Figtree、IBM Plex Mono 都沒有這些字母（查 Google Fonts 的 unicode-range，2026-11-10），
+   所以三個原字型照舊排在前面——7z、.tar、版本號等拉丁字仍是它們——該語言的字母才落到 --script 那一個字型。
+   和日文、韓文不同：這裡不讓文字系統的字型排第一，否則 Latin 部分會換成 Noto 的拉丁字。捷克、匈牙利、羅馬尼亞、瑞典文
+   只用到拉丁擴充字母（ě ő ű ă ș ț å），三個原字型都有，不需要額外字型。
+   這份「語言 → 字型」對照也寫在 tools/build-pages.py 的 SCRIPT_FONTS（載入哪些 Google 字型）與 tools/og.html（分享圖）：
+   改動要三處一起改。build-pages.py 的 check_script_fonts 與 tools/make-og.py 的 check_og_fonts 會在不一致時停下來 */
+html[lang="th"]{--script:'Noto Sans Thai'}
+html[lang="el"]{--script:'Noto Sans'}
+html[lang="hi"]{--script:'Noto Sans Devanagari'}
+html[lang="ar"]{--script:'Noto Sans Arabic'}
+html[lang="fa"]{--script:'Vazirmatn'}
+html[lang="he"]{--script:'Noto Sans Hebrew'}
+html:is([lang="th"],[lang="el"],[lang="hi"],[lang="ar"],[lang="fa"],[lang="he"]){
+  --font-display:'Unbounded', var(--script), 'Segoe UI', system-ui, sans-serif;
+  --font-body:'Figtree', var(--script), 'Segoe UI', system-ui, sans-serif;
+  --font-mono:'IBM Plex Mono', var(--script), ui-monospace, Consolas, monospace;
+}
 /* header-widths:end */
 
 /* ===== 基礎 ===== */
@@ -149,11 +166,19 @@ h1,h2,h3,h4,.lede,.hero-body,.card,.sub,.honest{overflow-wrap:anywhere}
 .wrap{max-width:1280px;margin:0 auto;padding-inline:24px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 /* header-widths:end */
-.skip{position:absolute;left:16px;top:-80px;z-index:50;background:var(--btn-bg);color:var(--btn-fg);padding:12px 18px;border-radius:var(--radius-s);text-decoration:none;font-weight:700}
+.skip{position:absolute;inset-inline-start:16px;top:-80px;z-index:50;background:var(--btn-bg);color:var(--btn-fg);padding:12px 18px;border-radius:var(--radius-s);text-decoration:none;font-weight:700}
 .skip:focus{top:12px}
 .eyebrow{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--sky-text);line-height:1.5}
 .h2{font-family:var(--font-display);font-weight:800;font-size:clamp(28px,3.6vw,48px);line-height:1.1}
-html[lang="en"] .h2, html[lang="en"] .h1, html[lang="en"] .big, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) :is(.h2,.h1,.big){letter-spacing:-0.02em}
+html[lang="en"] .h2, html[lang="en"] .h1, html[lang="en"] .big, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"],[lang="cs"],[lang="hu"],[lang="ro"],[lang="sv"]) :is(.h2,.h1,.big){letter-spacing:-0.02em}
+/* 阿拉伯文、波斯文的字母靠連筆相接，加字距會把連筆拆開；梵文、泰文的組合字母也不適合加字距。這幾種語言的小標一律不加字距 */
+html:is([lang="th"],[lang="hi"],[lang="ar"],[lang="fa"],[lang="he"]) .eyebrow{letter-spacing:0}
+/* 字母上下有附加符號的文字系統（泰文聲調、梵文上下加的符號、阿拉伯文點與母音符號）：標題行高比拉丁語系大，否則兩行的符號會相疊。
+   行高數字依 1280／375px 的實際頁面截圖定下 */
+html:is([lang="th"],[lang="hi"],[lang="ar"],[lang="fa"]) :is(.h2,.sub){line-height:1.35}
+html:is([lang="th"],[lang="hi"],[lang="ar"],[lang="fa"]) .h1 .line{line-height:1.35}
+html:is([lang="he"],[lang="el"]) :is(.h2,.sub){line-height:1.25}
+html:is([lang="he"],[lang="el"]) .h1 .line{line-height:1.2}
 html[lang="zh-Hant"] .h2, html[lang="zh-Hans"] .h2, html[lang="ja"] .h2, html[lang="ko"] .h2{letter-spacing:0;line-height:1.25}
 .lede{color:var(--fg-2);font-size:18px;line-height:1.65;max-width:36em}
 section{scroll-margin-top:72px}
@@ -175,7 +200,7 @@ section{scroll-margin-top:72px}
 .brand img{width:36px;height:36px;border-radius:8px;box-shadow:0 0 0 1px var(--mark-ring)}
 .wordmark{font-family:'Unbounded', var(--font-display);font-weight:800;font-size:19px;letter-spacing:-0.02em;color:var(--fg);white-space:nowrap}
 .amber{color:var(--amber)}
-.nav{display:flex;flex-wrap:wrap;gap:2px;margin-left:auto;min-width:0}
+.nav{display:flex;flex-wrap:wrap;gap:2px;margin-inline-start:auto;min-width:0}
 .nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;border-radius:var(--radius-s);text-decoration:none;font-weight:600;font-size:15px;color:var(--fg-2)}
 .nav a:hover{color:var(--fg);background:color-mix(in srgb, var(--sky-g) 12%, transparent)}
 .nav a.nav-dl{color:var(--fg)}
@@ -191,19 +216,22 @@ section{scroll-margin-top:72px}
 .lang-caret{width:12px;height:12px;flex:none;transition:transform .15s ease}
 .lang-short{display:none;flex:1 1 auto;white-space:nowrap}
 .lang[open] .lang-caret{transform:rotate(180deg)}
-/* 清單靠觸發鈕右緣對齊。max-width：鈕右緣到視窗右緣 70～76px（主題鈕＋間距＋頁邊），88px 再留 12～18px 左邊界。
+/* 清單靠觸發鈕尾端（左右書寫各自的行尾）對齊。max-width：鈕尾端到視窗邊 70～76px（主題鈕＋間距＋頁邊），88px 再留 12～18px 的另一側邊界。
    max-height：頁首 65px＋間距 6px，88px 再留約 17px 下邊界。
    模板的 role="list" 不要刪：Safari 的 VoiceOver 會把 list-style:none 的清單當成不是清單 */
-.lang-list{position:absolute;top:calc(100% + 6px);right:0;width:max-content;min-width:100%;max-width:calc(100vw - 88px);max-height:calc(100vh - 88px);overflow-y:auto;margin:0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);box-shadow:var(--shadow-2)}
+.lang-list{position:absolute;top:calc(100% + 6px);inset-inline-end:0;width:max-content;min-width:100%;max-width:calc(100vw - 88px);max-height:calc(100vh - 88px);overflow-y:auto;margin:0;padding:4px;list-style:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);box-shadow:var(--shadow-2)}
 .lang-list a{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px;padding:0 10px;border-radius:var(--radius-s);color:var(--fg);font:600 15px/1.3 var(--font-body);text-decoration:none;overflow-wrap:anywhere}
 .lang-list a:hover{background:color-mix(in srgb, var(--sky-g) 12%, transparent)}
 /* 清單有 overflow，全站的外環會被裁掉，所以往內畫；內環不能省，淺色主題的琥珀色外框對白底只有約 2:1 */
 .lang-list a:focus-visible{outline-offset:-3px;box-shadow:inset 0 0 0 5px var(--fg)}
 .lang-list a[aria-current="true"]{font-weight:700}
-/* 18 項時清單太高：視窗夠寬就排成兩欄，先由上往下填滿第一欄（--lang-rows 是每欄列數，由建置腳本算出）。
-   視窗窄於 520px 維持單欄、清單內捲動；兩欄時 max-content 約 420px，加上右側 88px 邊界仍放得下 */
+/* 28 項時清單太高：視窗夠寬就排成多欄，先由上往下填滿第一欄（--lang-rows、--lang-rows3 是兩欄、三欄時每欄的列數，由建置腳本算出）。
+   視窗窄於 520px 維持單欄、清單內捲動；520px 起兩欄；760px 起三欄（三欄的 max-content 約 600px，加上另一側 88px 邊界放得下） */
 @media (min-width:520px){
   .lang-list{display:grid;grid-auto-flow:column;grid-template-rows:repeat(var(--lang-rows),auto);column-gap:4px}
+}
+@media (min-width:760px){
+  .lang-list{grid-template-rows:repeat(var(--lang-rows3),auto)}
 }
 .lang-check{width:16px;height:16px;flex:none;color:var(--sky-text)}
 .lang-list a:not([aria-current="true"]) .lang-check{visibility:hidden}
@@ -266,17 +294,17 @@ html[lang="zh-Hant"] .h1 .line, html[lang="zh-Hans"] .h1 .line, html[lang="ja"] 
 html[lang="en"] .h1{font-size:clamp(21px,min((100vw - 34px) / 13.4, 6.81vw),52px)}
 @media (min-width:900px){html[lang="en"] .h1{font-size:clamp(34px,3.7vw,52px)}}
 /* 德文、法文、西班牙文、巴西葡語：句子比英文長，字級比英文小一級；片語規則同英文（HERO_PHRASES） */
-html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"],[lang="ru"],[lang="ko"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .h1{font-size:clamp(21px,min((100vw - 34px) / 15.5, 6.2vw, 38px),52px)}
-@media (min-width:900px){html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"],[lang="ru"],[lang="ko"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .h1{font-size:clamp(30px,2.85vw,38px)}}
+html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"],[lang="ru"],[lang="ko"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"],[lang="th"],[lang="cs"],[lang="hu"],[lang="ro"],[lang="sv"],[lang="el"],[lang="hi"],[lang="ar"],[lang="fa"],[lang="he"]) .h1{font-size:clamp(21px,min((100vw - 34px) / 15.5, 6.2vw, 38px),52px)}
+@media (min-width:900px){html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ja"],[lang="ru"],[lang="ko"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"],[lang="th"],[lang="cs"],[lang="hu"],[lang="ro"],[lang="sv"],[lang="el"],[lang="hi"],[lang="ar"],[lang="fa"],[lang="he"]) .h1{font-size:clamp(30px,2.85vw,38px)}}
 .h1 .ph{display:inline-block;max-width:100%}
 .l-under .ph{text-decoration:underline;text-decoration-color:var(--sky-g);text-decoration-thickness:.09em;text-underline-offset:.16em;text-decoration-skip-ink:none}
 @media (min-width:600px){
-  .h1 .l-under{margin-left:.4em;max-width:calc(100% - .4em)}
-  .h1 .l-amber{margin-left:.8em;max-width:calc(100% - .8em)}
+  .h1 .l-under{margin-inline-start:.4em;max-width:calc(100% - .4em)}
+  .h1 .l-amber{margin-inline-start:.8em;max-width:calc(100% - .8em)}
 }
 @media (min-width:900px){
-  .h1 .l-under{margin-left:.75em;max-width:calc(100% - .75em)}
-  .h1 .l-amber{margin-left:1.5em;max-width:calc(100% - 1.5em)}
+  .h1 .l-under{margin-inline-start:.75em;max-width:calc(100% - .75em)}
+  .h1 .l-amber{margin-inline-start:1.5em;max-width:calc(100% - 1.5em)}
 }
 .l-under{text-decoration:underline;text-decoration-color:var(--sky-g);text-decoration-thickness:.09em;text-underline-offset:.16em;text-decoration-skip-ink:none}
 .l-amber > span{color:var(--amber);background:var(--strip-bg);box-shadow:inset 0 0 0 1px var(--strip-line);padding:0 .22em .04em;border-radius:.14em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
@@ -348,26 +376,26 @@ html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo
   box-shadow:var(--shadow-2)}
 .folder{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
 .folder span{font-family:var(--font-mono);font-size:13px;font-weight:600;color:#FFFFFF;background:rgba(56,189,248,.28);padding:0 8px;border-radius:4px}
-.ctx{position:relative;width:min(300px, 100%);margin:8px 0 0 clamp(8px, 9%, 84px);background:var(--ctx-bg);-webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5);border:1px solid var(--ctx-line);border-radius:8px;box-shadow:var(--ctx-shadow);color:var(--ctx-fg);padding:4px;font:400 14px/1.2 var(--font-body)}
+.ctx{position:relative;width:min(300px, 100%);margin:8px 0 0;margin-inline-start:clamp(8px, 9%, 84px);background:var(--ctx-bg);-webkit-backdrop-filter:blur(28px) saturate(1.5);backdrop-filter:blur(28px) saturate(1.5);border:1px solid var(--ctx-line);border-radius:8px;box-shadow:var(--ctx-shadow);color:var(--ctx-fg);padding:4px;font:400 14px/1.2 var(--font-body)}
 .ctx-top{display:flex;justify-content:space-between;padding:2px 4px}
 .ctx-top span{width:44px;height:44px;display:grid;place-items:center;border-radius:6px}
 .ctx svg.ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .ctx-sep{height:1px;background:var(--ctx-sep);margin:4px 2px}
 .row{position:relative;display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;border-radius:6px}
-.row .chev{margin-left:auto;width:12px;height:12px}
+.row .chev{margin-inline-start:auto;width:12px;height:12px}
 .row.hot{background:var(--ctx-hover)}
 .row.hot .zname{font-family:'Unbounded', var(--font-display);font-weight:700;font-size:13px;letter-spacing:-0.01em}
-.row.hot svg.mk{width:22px;height:22px;flex:none;margin-left:-3px}
-.pill{margin-left:auto;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:999px;background:#F6A609;color:#152238;white-space:nowrap}
-.row.hot .chev{margin-left:6px}
-.cursor{position:absolute;left:58%;top:22px;width:22px;height:30px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
-.msi-note{margin-top:24px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:var(--radius-m);background:color-mix(in srgb, var(--amber) 9%, var(--surface));border:1px solid var(--line);border-left:4px solid var(--amber);color:var(--fg);font-size:16px;line-height:1.55}
+.row.hot svg.mk{width:22px;height:22px;flex:none;margin-inline-start:-3px}
+.pill{margin-inline-start:auto;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:999px;background:#F6A609;color:#152238;white-space:nowrap}
+.row.hot .chev{margin-inline-start:6px}
+.cursor{position:absolute;inset-inline-start:58%;top:22px;width:22px;height:30px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.msi-note{margin-top:24px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:var(--radius-m);background:color-mix(in srgb, var(--amber) 9%, var(--surface));border:1px solid var(--line);border-inline-start:4px solid var(--amber);color:var(--fg);font-size:16px;line-height:1.55}
 .msi-note svg{width:22px;height:22px;flex:none;margin-top:1px}
 .msi-note strong{display:block;font-weight:700}
 .msi-note a{color:inherit;text-underline-offset:3px}
 @media (max-width:599px){
   .wall{min-height:0;padding:20px 14px 32px}
-  .ctx{margin-left:8px}
+  .ctx{margin-inline-start:8px}
 }
 
 /* ===== #onepass ===== */
@@ -389,7 +417,7 @@ html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo
 .speed-txt{flex:1 1 380px}
 .speed-txt .h2{margin-top:12px}
 .sub{margin-top:14px;font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2.4vw,32px);line-height:1.2}
-html[lang="en"] .sub, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .sub{letter-spacing:-0.02em}
+html[lang="en"] .sub, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"],[lang="cs"],[lang="hu"],[lang="ro"],[lang="sv"]) .sub{letter-spacing:-0.02em}
 html[lang="zh-Hant"] .sub, html[lang="zh-Hans"] .sub, html[lang="ja"] .sub, html[lang="ko"] .sub{letter-spacing:0;line-height:1.3}
 /* 越南文的聲調符號疊得高，標題行高要比拉丁語系的預設大一點 */
 html[lang="vi"] .h2{line-height:1.25}
@@ -397,7 +425,7 @@ html[lang="vi"] .h1 .line{line-height:1.2}
 html[lang="vi"] .sub{line-height:1.3}
 .hl{color:var(--amber);background:var(--strip-bg);box-shadow:inset 0 0 0 1px var(--strip-line);padding:0 .2em;border-radius:.16em}
 .speed-txt .lede{margin-top:18px}
-.honest{margin-top:22px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:var(--radius-m);background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--sky-g);color:var(--fg);font-size:16px;line-height:1.55}
+.honest{margin-top:22px;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:var(--radius-m);background:var(--surface);border:1px solid var(--line);border-inline-start:4px solid var(--sky-g);color:var(--fg);font-size:16px;line-height:1.55}
 .honest svg{width:20px;height:20px;flex:none;margin-top:2px;color:var(--sky-text)}
 .chart{flex:1.2 1 460px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-xl);padding:clamp(20px,3vw,32px);box-shadow:var(--shadow-1)}
 .legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;font-size:14px;color:var(--fg-2);margin-bottom:22px}
@@ -416,8 +444,8 @@ html[lang="vi"] .sub{line-height:1.3}
 .brow.zst .val{font-weight:600}
 .tbl-wrap{margin-top:40px;overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius-l);background:var(--surface);box-shadow:var(--shadow-1)}
 table{border-collapse:collapse;width:100%;min-width:720px;font-size:15px}
-caption{caption-side:top;text-align:left;padding:14px 18px 0;font-size:13px;color:var(--fg-2);font-family:var(--font-mono)}
-th,td{padding:12px 18px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+caption{caption-side:top;text-align:start;padding:14px 18px 0;font-size:13px;color:var(--fg-2);font-family:var(--font-mono)}
+th,td{padding:12px 18px;text-align:start;border-bottom:1px solid var(--line);white-space:nowrap}
 thead th{font-size:13px;color:var(--fg-2);font-weight:700}
 thead th.mono{font-family:var(--font-mono)}
 tbody tr:nth-child(odd){background:var(--surface-2)}
@@ -439,7 +467,7 @@ th.zst-h{color:var(--fg)}
 .card{flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:12px;padding:24px;border-radius:var(--radius-l);background:var(--dl-card);border:1px solid var(--dl-card-line)}
 .card.feat{border-color:#F6A609;box-shadow:0 0 0 1px #F6A609 inset}
 .card h3{font-family:var(--font-display);font-weight:700;font-size:19px;line-height:1.3;color:#FFFFFF}
-html[lang="en"] .card h3, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .card h3{letter-spacing:-0.01em}
+html[lang="en"] .card h3, html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="vi"],[lang="eo"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"],[lang="cs"],[lang="hu"],[lang="ro"],[lang="sv"]) .card h3{letter-spacing:-0.01em}
 .card .fn{font-family:var(--font-mono);font-size:13.5px;color:var(--on-navy-2);word-break:break-all}
 .badge{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;line-height:1.3;padding:5px 10px;border-radius:999px;background:rgba(56,189,248,.16);color:#7DD3FC;border:1px solid rgba(56,189,248,.45)}
 .badge.no{background:rgba(255,255,255,.07);color:var(--on-navy-2);border-color:rgba(255,255,255,.30)}
@@ -474,7 +502,7 @@ html:is([lang="de"],[lang="vi"]) .dn-addr{font-size:14px}
 .dn-status{flex:1 1 100%;min-height:1.4em;font-size:14px;line-height:1.4;color:var(--sky-text)}
 .dn-qr{margin:20px 0 0;width:min(100%,208px);padding:14px;background:#FFFFFF;border:1px solid #D4D4D4;border-radius:12px;line-height:0}
 .dn-qr svg{display:block;width:100%;height:auto}
-.dn-notes{margin:24px 0 0;padding-left:1.3em;color:var(--fg-2);line-height:1.75;list-style:disc outside}
+.dn-notes{margin:24px 0 0;padding-inline-start:1.3em;color:var(--fg-2);line-height:1.75;list-style:disc outside}
 .dn-notes li{display:list-item}
 .dn-notes li + li{margin-top:6px}
 .dn-notes a{color:var(--fg);text-underline-offset:3px}
@@ -491,7 +519,7 @@ html:is([lang="de"],[lang="vi"]) .dn-addr{font-size:14px}
 .foot p{font-size:15px;color:var(--fg-2);line-height:1.6}
 .foot p + p{margin-top:4px}
 .foot nav{display:flex;flex-wrap:wrap;gap:4px 8px;margin-top:10px}
-.foot nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;margin-left:-8px;color:var(--fg);font-weight:600;font-size:15px;text-underline-offset:4px}
+.foot nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;margin-inline-start:-8px;color:var(--fg);font-weight:600;font-size:15px;text-underline-offset:4px}
 .foot-mark{display:flex;align-items:center;gap:10px}
 .foot-mark img{width:44px;height:44px;border-radius:10px;transform:rotate(-8deg);box-shadow:0 0 0 1px var(--mark-ring)}
 
@@ -511,7 +539,7 @@ html:is([lang="de"],[lang="vi"]) .dn-addr{font-size:14px}
 .shot img{width:100%;height:auto;transition:transform .25s ease}
 .shot a:hover img{transform:scale(1.015)}
 /* 放大提示：觸控裝置沒有 hover，所以一直顯示 */
-.shot-zoom{position:absolute;right:12px;bottom:12px;width:40px;height:40px;pointer-events:none}
+.shot-zoom{position:absolute;inset-inline-end:12px;bottom:12px;width:40px;height:40px;pointer-events:none}
 .shot-zoom svg{width:20px;height:20px}
 .shot h3{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.35;margin-top:22px}
 .shot p{color:var(--fg-2);margin-top:8px;max-width:36em}
@@ -528,7 +556,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
 .shot-box.actual figure{margin:auto;padding:var(--shot-pad)}
 .shot-box.actual img{max-width:none;max-height:none}
 /* 寬度隨文字，不用 100vw：100vw 含捲軸寬，會多撐出一條橫向捲動 */
-.shot-box.actual figcaption{position:sticky;left:var(--shot-pad);right:var(--shot-pad);width:fit-content;max-width:calc(100vw - 2 * var(--shot-pad));margin-inline:auto}
+.shot-box.actual figcaption{position:sticky;inset-inline:var(--shot-pad);width:fit-content;max-width:calc(100vw - 2 * var(--shot-pad));margin-inline:auto}
 .shot-box.actual .shot-fit{cursor:zoom-out}
 .shot-box figcaption{margin-top:14px;text-align:center;font-weight:600}
 /* 深底圓鈕：放大檢視的按鈕與截圖卡上的放大提示共用 */
@@ -536,10 +564,28 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
 .shot-btn{position:fixed;width:44px;height:44px;cursor:pointer}
 .shot-btn:hover{background:rgba(7,18,33,.9);border-color:#fff}
 .shot-btn svg{width:22px;height:22px}
-.shot-x{top:16px;right:16px}
-.shot-prev{left:16px;top:calc(50% - 22px)}
-.shot-next{right:16px;top:calc(50% - 22px)}
+/* 關閉鈕在行尾側的上角，「上一張」在行首側、「下一張」在行尾側：從右寫到左的頁面這三顆左右互換，
+   兩個箭頭的方向也互換（見下面的 .shot-prev svg 規則）。鍵盤的左右鍵同理，見 script 的第 6 節 */
+.shot-x{top:16px;inset-inline-end:16px}
+.shot-prev{inset-inline-start:16px;top:calc(50% - 22px)}
+.shot-next{inset-inline-end:16px;top:calc(50% - 22px)}
+:root[dir="rtl"] .shot-prev svg, :root[dir="rtl"] .shot-next svg{transform:scaleX(-1)}
 @media (max-width:820px){.shots{grid-template-columns:1fr}}
+
+/* ===== 從右寫到左（ar fa he） =====
+   整頁已由 <html dir="rtl"> 與上面各處的邏輯屬性（margin-inline-*、inset-inline-*、text-align:start、border-inline-start）鏡像：
+   導覽列、語言鈕、主題鈕換到另一側，圖文兩欄、贊助區、卡片、頁尾順序都跟著換。這裡只處理「不該鏡像」或「要另外翻轉」的東西 */
+/* 手繪右鍵選單（RTL 版 Windows 的選單本身就是鏡像的）：子選單箭頭換方向 */
+:root[dir="rtl"] .row .chev{transform:scaleX(-1)}
+/* 長條圖與表格內的數據：軸、數字、單位維持左到右（"4.1 s / 76.7 MB"在右到左的段落裡會被拆成亂序）；標題與列名仍照頁面方向 */
+:root[dir="rtl"] #bars .brow{direction:ltr}
+:root[dir="rtl"] td{direction:ltr;text-align:right}
+:root[dir="rtl"] .legend .k, :root[dir="rtl"] .chip{direction:ltr}
+/* 檔名、版本號、雜湊檔名、錢包地址是拉丁字串：自成一個左到右的隔離單位，位置跟著頁面走，內部順序不變 */
+:root[dir="rtl"] :is(.fn, .other a, .sign-note a, .dn-addr){direction:ltr;unicode-bidi:isolate}
+:root[dir="rtl"] .dn-addr{text-align:right}
+/* 字標「7-ZSTar」（頁首、頁尾、手繪選單那一列）：不隔離的話在右到左的列裡會顯示成「ZSTar-7」 */
+:root[dir="rtl"] :is(.wordmark, .zname){direction:ltr;unicode-bidi:isolate}
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .icon-tilt{transform:rotate(-8deg)}
@@ -570,7 +616,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
           <span class="lang-short" aria-hidden="true" data-i18n="lang.short"></span>
           <svg class="lang-caret" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
         </summary>
-        <ul class="lang-list" role="list" style="--lang-rows:{{lang_rows}}" data-i18n-attr="aria-label=a11y.lang">
+        <ul class="lang-list" role="list" style="--lang-rows:{{lang_rows}};--lang-rows3:{{lang_rows3}}" data-i18n-attr="aria-label=a11y.lang">
 {{lang_options}}
         </ul>
       </details>
@@ -722,7 +768,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
             <rect class="c-card" width="128" height="128" rx="14"/>
             <rect class="c-tx" x="26" y="34" width="60" height="8" rx="4"/><rect class="c-tx" x="26" y="54" width="76" height="8" rx="4"/><rect class="c-tx" x="26" y="74" width="48" height="8" rx="4"/>
           </g>
-          <text class="c-lab" x="70" y="140" text-anchor="middle">docs\</text>
+          <text class="c-lab" x="70" y="140" text-anchor="middle" direction="ltr">docs\</text>
           <g transform="matrix(0.43 0.25 -0.43 0.25 240 52)">
             <rect class="c-dash" width="128" height="128" rx="28"/>
             <rect class="c-dash" x="10" y="88" width="108" height="28" rx="6"/>
@@ -741,7 +787,7 @@ html:has(.shot-box[open]){overflow:hidden;scrollbar-gutter:stable;background:#07
             <rect x="10" y="88" width="108" height="28" rx="6" fill="#38BDF8"/>
             <text class="c-zst" x="64" y="102.5" text-anchor="middle" dominant-baseline="central">ZST</text>
           </g>
-          <text class="c-lab" x="410" y="154" text-anchor="middle">backup.tar.zst</text>
+          <text class="c-lab" x="410" y="154" text-anchor="middle" direction="ltr">backup.tar.zst</text>
           <defs><marker id="op-head" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="18" refX="12" refY="9" orient="auto"><polygon class="c-head" points="0,0 20,9 0,18"/></marker></defs>
           <path class="c-arrow" marker-end="url(#op-head)" d="M 112 30 C 170 -40, 320 -40, 372 40"/>
           <text class="c-way" x="242" y="-34" text-anchor="middle" data-i18n="onepass.fig_pack"></text>
@@ -951,9 +997,15 @@ const BENCH = [ // key, files, rawMB, zip[s,MB], 7z[s,MB], tar.zst[s,MB]
 const ROW_LABELS = {{dict_json}};
 /* 小數點與千位分隔：德文、巴西葡語、越南文、義大利文、荷蘭文、土耳其文、印尼文用「4,1」「13.371」，
    法文用「4,1」「13 371」（窄不換行空格），世界語、俄文、烏克蘭文、波蘭文用「4,1」「13 371」（不換行空格）；
-   英文、中文、日文、韓文、西班牙文（依拉丁美洲的 es-419 慣例）維持「4.1」「13,371」：韓文刻意沿用英文寫法，所以表中沒有 'ko' 項 */
-const NUM_STYLE = { 'de': [',', '.'], 'pt-BR': [',', '.'], 'fr': [',', '\u202f'], 'vi': [',', '.'], 'eo': [',', '\u00a0'],
-  'ru': [',', '\u00a0'], 'uk': [',', '\u00a0'], 'pl': [',', '\u00a0'], 'it': [',', '.'], 'nl': [',', '.'], 'tr': [',', '.'], 'id': [',', '.'] }[document.documentElement.lang];
+   英文、中文、日文、韓文、西班牙文（依拉丁美洲的 es-419 慣例）維持「4.1」「13,371」：韓文刻意沿用英文寫法，所以表中沒有 'ko' 項。
+   第二批：捷克、匈牙利、瑞典文用「4,1」「13 371」（不換行空格），羅馬尼亞、希臘文用「4,1」「13.371」（依 Unicode CLDR）；
+   泰文、印地文（數字不到十萬，印度式分組與英文相同）、希伯來文是「4.1」「13,371」；阿拉伯文、波斯文頁面用西式 0–9
+   （字典已如此，頁面注入的數字也是），同樣是「4.1」「13,371」，所以這幾種語言沒有項目 */
+const NBSP = String.fromCharCode(0xA0);    /* U+00A0，不換行空格 */
+const NNBSP = String.fromCharCode(0x202F); /* U+202F，窄不換行空格（法文的千位分隔） */
+const NUM_STYLE = { 'de': [',', '.'], 'pt-BR': [',', '.'], 'fr': [',', NNBSP], 'vi': [',', '.'], 'eo': [',', NBSP],
+  'ru': [',', NBSP], 'uk': [',', NBSP], 'pl': [',', NBSP], 'it': [',', '.'], 'nl': [',', '.'], 'tr': [',', '.'], 'id': [',', '.'],
+  'cs': [',', NBSP], 'hu': [',', NBSP], 'sv': [',', NBSP], 'ro': [',', '.'], 'el': [',', '.'] }[document.documentElement.lang];
 const num = v => NUM_STYLE ? String(v).replace('.', NUM_STYLE[0]) : String(v);
 const count = v => NUM_STYLE ? String(v).replace(',', NUM_STYLE[1]) : String(v);
 /* 法文介面的檔案大小單位是「Mo」 */
@@ -1156,8 +1208,10 @@ syncTheme();
   box.addEventListener('keydown', e => {
     /* 原始大小且圖比視窗寬時，左右鍵留給捲動，換圖用上一張、下一張按鈕 */
     if (box.classList.contains('actual') && box.scrollWidth > box.clientWidth) return;
-    if (e.key === 'ArrowLeft') show(at - 1);
-    if (e.key === 'ArrowRight') show(at + 1);
+    /* 從右寫到左的頁面：上一張在右邊，所以右鍵是上一張 */
+    const rtl = document.documentElement.dir === 'rtl';
+    if (e.key === (rtl ? 'ArrowRight' : 'ArrowLeft')) show(at - 1);
+    if (e.key === (rtl ? 'ArrowLeft' : 'ArrowRight')) show(at + 1);
   });
 })();
 

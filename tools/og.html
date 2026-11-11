@@ -9,23 +9,46 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@800&amp;display=swap">
 <!-- Full Unbounded from Google for every letter the self-hosted subset below does not have (accents, guillemets, Vietnamese, Esperanto) -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800&amp;display=swap">
+<!-- Batch 2: the script families (Unbounded has none of these letters; the Latin words in a line stay Unbounded) -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@800&amp;display=swap">
 <style>
 /* The subset only covers ASCII and a few punctuation marks; the range keeps those on the self-hosted file and sends the rest to the Google face above */
 @font-face{font-family:'Unbounded';font-weight:500 900;src:url(../public/fonts/unbounded.woff2) format('woff2');unicode-range:U+0020-007E,U+00B7,U+00D7,U+2013,U+2014,U+2018,U+2019,U+201C,U+201D,U+2026,U+2192}
 @font-face{font-family:'Noto Sans SC';font-weight:400 900;src:url(../public/fonts/noto-sans-sc.woff2) format('woff2')}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{position:relative;width:1200px;height:630px;overflow:hidden;color:#FFFFFF;font-family:'Unbounded',sans-serif;background:radial-gradient(620px 460px at 930px 320px,#123A5C 0,rgba(18,58,92,0) 70%),linear-gradient(160deg,#0D2038 0,#071425 100%)}
+body{position:relative;width:1200px;height:630px;overflow:hidden;color:#FFFFFF;font-family:'Unbounded',sans-serif;background:radial-gradient(620px 460px at var(--glow-x,930px) 320px,#123A5C 0,rgba(18,58,92,0) 70%),linear-gradient(160deg,#0D2038 0,#071425 100%)}
 .wordmark{position:absolute;left:72px;top:60px;font-weight:800;font-size:34px;letter-spacing:-.02em}
 .amber{color:#F6A609}
 .lines{position:absolute;left:72px;top:176px;display:flex;flex-direction:column;align-items:flex-start;gap:30px;font-weight:800;font-size:44px;line-height:1.1;letter-spacing:-.02em}
-html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"]) .lines{font-size:40px}
+html:is([lang="de"],[lang="fr"],[lang="es"],[lang="pt-BR"],[lang="ru"],[lang="it"],[lang="pl"],[lang="tr"],[lang="nl"],[lang="uk"],[lang="id"],[lang="cs"],[lang="hu"],[lang="ro"],[lang="sv"]) .lines{font-size:40px}
+/* Greek, Thai, Devanagari, Arabic, Persian, Hebrew: Unbounded first (Latin words), the script family for the rest.
+   No letter spacing: it would pull Arabic and Persian joins apart and does not suit Thai or Devanagari clusters.
+   Line height leaves room for the marks above and below the letters. */
+html[lang="el"] .lines{font-family:'Unbounded','Noto Sans',sans-serif;font-size:40px;line-height:1.2;letter-spacing:0}
+html[lang="th"] .lines{font-family:'Unbounded','Noto Sans Thai',sans-serif;font-size:42px;line-height:1.35;letter-spacing:0}
+html[lang="hi"] .lines{font-family:'Unbounded','Noto Sans Devanagari',sans-serif;font-size:40px;line-height:1.35;letter-spacing:0}
+html[lang="ar"] .lines{font-family:'Unbounded','Noto Sans Arabic',sans-serif;font-size:42px;line-height:1.35;letter-spacing:0}
+html[lang="fa"] .lines{font-family:'Unbounded','Vazirmatn',sans-serif;font-size:42px;line-height:1.35;letter-spacing:0}
+html[lang="he"] .lines{font-family:'Unbounded','Noto Sans Hebrew',sans-serif;font-size:44px;line-height:1.25;letter-spacing:0}
+/* Right to left: the picture is mirrored, wordmark and lines on the right, the icon on the left */
+html[dir="rtl"] .wordmark{left:auto;right:72px;direction:ltr;unicode-bidi:isolate} /* the brand stays 7-ZSTar */
+html[dir="rtl"] .lines{left:auto;right:72px}
+html[dir="rtl"] .icon{right:auto;left:76px;transform:rotate(7deg)}
+/* The glow behind the icon moves with it: 930px from the left in the picture above (the icon's centre is at 982px,
+   so the glow sits 52px short of it), the mirror of that offset from the icon's new centre at 218px is 270px */
+html[dir="rtl"]{--glow-x:270px} /* used by the body background above */
 html[lang="zh-Hant"] .lines{font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;font-size:46px;line-height:1.25;letter-spacing:0}
 html[lang="ja"] .lines{font-family:'Noto Sans JP','Yu Gothic','Meiryo',sans-serif;font-size:46px;line-height:1.25;letter-spacing:0}
 html[lang="ko"] .lines{font-family:'Noto Sans KR','Malgun Gothic',sans-serif;font-size:46px;line-height:1.25;letter-spacing:0}
 html[lang="zh-Hans"] .lines{font-family:'Noto Sans SC','Microsoft YaHei',sans-serif;font-size:46px;line-height:1.25;letter-spacing:0}
 .u{box-shadow:0 6px 0 #38BDF8}
-.hl{padding:6px 16px;margin-left:-16px;border-radius:10px;color:#F6A609;background:#152238}
+.hl{padding:6px 16px;margin-inline-start:-16px;border-radius:10px;color:#F6A609;background:#152238}
 .icon{position:absolute;right:76px;top:173px;width:284px;height:284px;transform:rotate(-7deg);filter:drop-shadow(0 0 54px rgba(56,189,248,.28))}
 </style>
 </head>
